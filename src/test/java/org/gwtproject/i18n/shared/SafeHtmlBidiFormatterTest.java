@@ -23,10 +23,10 @@ import static org.gwtproject.i18n.shared.BidiFormatterBase.Format.RIGHT;
 import static org.gwtproject.i18n.shared.BidiFormatterBase.Format.RLE;
 
 import org.gwtproject.i18n.client.HasDirection.Direction;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
 import junit.framework.TestCase;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
 /**
  * Unit tests for {@link SafeHtmlBidiFormatter}.

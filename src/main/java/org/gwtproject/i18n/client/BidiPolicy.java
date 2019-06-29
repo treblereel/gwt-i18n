@@ -15,8 +15,6 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
-
 /**
  * Provides low-level functionality to determine whether to support bidi.
  */
@@ -40,7 +38,7 @@ public class BidiPolicy {
     }
   }
 
-  private static BidiPolicyImpl impl = GWT.create(BidiPolicyImpl.class);
+  private static BidiPolicyImpl impl = new BidiPolicyImpl();
 
   /**
    * Returns true if bidi is enabled, false if disabled.

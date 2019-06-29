@@ -17,7 +17,7 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.i18n.client.impl.CurrencyDataImpl;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * (such as when all you call is CurrencyList.get().getDefault() ).
    */
   private static class CurrencyListInstance {
-    private static CurrencyList instance = GWT.create(CurrencyList.class);
+    private static CurrencyList instance = new CurrencyList();
   }
 
   /**
@@ -52,26 +52,17 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * any existing entries.  This is used by subclasses that need to slightly
    * alter the data used by the parent locale.
    */
-  protected static final native JavaScriptObject overrideMap(
-      JavaScriptObject original, JavaScriptObject override) /*-{
-    for (var key in override) {
-      if (override.hasOwnProperty(key)) {
-        original[key] = override[key];
-      }
-    }
-    return original;
-  }-*/;
+  protected static final JavaScriptObject overrideMap(
+      JavaScriptObject original, JavaScriptObject override) {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Add currency codes contained in the map to an ArrayList.
    */
-  private static native void loadCurrencyValuesNative(JavaScriptObject map, ArrayList<CurrencyData> collection) /*-{
-    for (var key in map) {
-      if (map.hasOwnProperty(key)) {
-        collection.@java.util.ArrayList::add(Ljava/lang/Object;)(map[key]);
-      }
-    }
-  }-*/;
+  private static void loadCurrencyValuesNative(JavaScriptObject map, ArrayList<CurrencyData> collection) {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Directly reference an entry in the currency names map JSO.
@@ -79,9 +70,9 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * @param code ISO4217 currency code
    * @return currency name, or the currency code if not known
    */
-  private static native String lookupNameNative(JavaScriptObject namesMap, String code) /*-{
-    return namesMap[code] || code;
-  }-*/;
+  private static String lookupNameNative(JavaScriptObject namesMap, String code) {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Directly reference an entry in the currency map JSO.
@@ -89,9 +80,9 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * @param code ISO4217 currency code
    * @return currency data
    */
-  private static native CurrencyData lookupNative(JavaScriptObject dataMap, String code) /*-{
-    return dataMap[code];
-  }-*/;
+  private static CurrencyData lookupNative(JavaScriptObject dataMap, String code) {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Map of currency codes to CurrencyData.
@@ -215,9 +206,9 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * 
    * Generated implementations override this method.
    */
-  protected native CurrencyData getDefaultNative() /*-{
-    return [ "USD", "$", 2, "US$" ];
-  }-*/;
+  protected CurrencyData getDefaultNative() {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Loads the currency map.
@@ -238,14 +229,9 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * 
    * Generated implementations override this method.
    */
-  protected native JavaScriptObject loadCurrencyMapNative() /*-{
-    return {
-      "USD": [ "USD", "$", 2 ],
-      "EUR": [ "EUR", "€", 2 ],
-      "GBP": [ "GBP", "UK£", 2 ],
-      "JPY": [ "JPY", "¥", 0 ],
-    };
-  }-*/;
+  protected JavaScriptObject loadCurrencyMapNative() {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Loads the currency names map.
@@ -266,14 +252,9 @@ public class CurrencyList implements Iterable<CurrencyData> {
    * 
    * Generated implementations override this method.
    */
-  protected native JavaScriptObject loadNamesMapNative() /*-{
-    return {
-      "USD": "US Dollar",
-      "EUR": "Euro",
-      "GBP": "British Pound Sterling",
-      "JPY": "Japanese Yen",
-    };
-  }-*/;
+  protected JavaScriptObject loadNamesMapNative() {
+    throw new UnsupportedOperationException(CurrencyList.class.getCanonicalName());
+  }
 
   /**
    * Ensure that the map of currency data has been initialized.

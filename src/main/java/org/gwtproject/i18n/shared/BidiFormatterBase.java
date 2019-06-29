@@ -16,10 +16,11 @@
 
 package org.gwtproject.i18n.shared;
 
+import org.gwtproject.i18n.client.HasDirection;
 import org.gwtproject.i18n.client.HasDirection.Direction;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.safehtml.shared.annotations.IsSafeHtml;
-import com.google.gwt.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
+import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
 
 /**
  * Base class for {@link BidiFormatter} and {@link SafeHtmlBidiFormatter} that

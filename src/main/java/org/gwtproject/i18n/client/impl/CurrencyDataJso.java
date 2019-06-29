@@ -1,12 +1,12 @@
 /*
  * Copyright 2008 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,12 +15,13 @@
  */
 package org.gwtproject.i18n.client.impl;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import jsinterop.base.Js;
+import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.i18n.client.CurrencyData;
 
 /**
  * JSO Overlay type that wraps currency data.
- * 
+ * <p>
  * The JSO is an array with three elements:
  * <pre>
  *   0 - ISO4217 currency code
@@ -36,61 +37,61 @@ import org.gwtproject.i18n.client.CurrencyData;
  * </pre>
  */
 public final class CurrencyDataJso extends JavaScriptObject implements CurrencyData {
-  
-  protected CurrencyDataJso() {
-  }
 
-  @Override
-  public native String getCurrencyCode() /*-{
-    return this[0];
-  }-*/;
+    protected CurrencyDataJso() {
+    }
 
-  @Override
-  public native String getCurrencySymbol() /*-{
-    return this[1];
-  }-*/;
+    @Override
+    public String getCurrencyCode() {
+        return Js.asArray(this)[0].asString();
+    }
 
-  @Override
-  public int getDefaultFractionDigits() {
-    return CurrencyDataImpl.getDefaultFractionDigits(getFlagsAndPrecision());
-  }
+    @Override
+    public String getCurrencySymbol() {
+        return Js.asArray(this)[1].asString();
+    }
 
-  @Override
-  public native String getPortableCurrencySymbol() /*-{
-    return this[3] || this[1];
-  }-*/;
+    @Override
+    public int getDefaultFractionDigits() {
+        return CurrencyDataImpl.getDefaultFractionDigits(getFlagsAndPrecision());
+    }
 
-  @Override
-  public native String getSimpleCurrencySymbol() /*-{
-    return this[4] || this[1];
-  }-*/;
+    @Override
+    public String getPortableCurrencySymbol() {
+        return Js.asArray(this)[3] != null ? Js.asArray(this)[3].asString() : Js.asArray(this)[3].asString();
+    }
 
-  @Override
-  public boolean isDeprecated() {
-    return CurrencyDataImpl.isDeprecated(getFlagsAndPrecision());
-  }
+    @Override
+    public String getSimpleCurrencySymbol() {
+        return Js.asArray(this)[4] != null ? Js.asArray(this)[4].asString() : Js.asArray(this)[3].asString();
+    }
 
-  @Override
-  public boolean isSpaceForced() {
-    return CurrencyDataImpl.isSpaceForced(getFlagsAndPrecision());
-  }
+    @Override
+    public boolean isDeprecated() {
+        return CurrencyDataImpl.isDeprecated(getFlagsAndPrecision());
+    }
 
-  @Override
-  public boolean isSpacingFixed() {
-    return CurrencyDataImpl.isSpacingFixed(getFlagsAndPrecision());
-  }
+    @Override
+    public boolean isSpaceForced() {
+        return CurrencyDataImpl.isSpaceForced(getFlagsAndPrecision());
+    }
 
-  @Override
-  public boolean isSymbolPositionFixed() {
-    return CurrencyDataImpl.isSymbolPositionFixed(getFlagsAndPrecision());
-  }
+    @Override
+    public boolean isSpacingFixed() {
+        return CurrencyDataImpl.isSpacingFixed(getFlagsAndPrecision());
+    }
 
-  @Override
-  public boolean isSymbolPrefix() {
-    return CurrencyDataImpl.isSymbolPrefix(getFlagsAndPrecision());
-  }
+    @Override
+    public boolean isSymbolPositionFixed() {
+        return CurrencyDataImpl.isSymbolPositionFixed(getFlagsAndPrecision());
+    }
 
-  private native int getFlagsAndPrecision() /*-{
-    return this[2];
-  }-*/;
+    @Override
+    public boolean isSymbolPrefix() {
+        return CurrencyDataImpl.isSymbolPrefix(getFlagsAndPrecision());
+    }
+
+    private int getFlagsAndPrecision() {
+        return Js.asArray(this)[2].asInt();
+    }
 }

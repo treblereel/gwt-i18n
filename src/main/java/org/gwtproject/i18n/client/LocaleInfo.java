@@ -15,7 +15,6 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
 import org.gwtproject.i18n.client.constants.DateTimeConstants;
 import org.gwtproject.i18n.client.constants.NumberConstants;
 import org.gwtproject.i18n.client.impl.CldrImpl;
@@ -36,8 +35,8 @@ public class LocaleInfo {
    * to LocaleInfo instances.
    */
   private static LocaleInfo instance  = new LocaleInfo(
-      (LocaleInfoImpl) GWT.create(LocaleInfoImpl.class),
-      (CldrImpl) GWT.create(CldrImpl.class));
+      new LocaleInfoImpl(),
+      new CldrImpl());
 
   /**
    * Returns an array of available locale names.

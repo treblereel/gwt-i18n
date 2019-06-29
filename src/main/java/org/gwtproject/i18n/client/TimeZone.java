@@ -15,10 +15,10 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.core.client.JsArrayString;
-
 import java.util.Date;
+
+import org.gwtproject.core.client.JsArrayInteger;
+import org.gwtproject.core.client.JsArrayString;
 
 /**
  * The TimeZone class implements a time zone information source for client

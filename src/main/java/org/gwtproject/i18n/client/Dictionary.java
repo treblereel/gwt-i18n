@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,8 +14,6 @@
  * the License.
  */
 package org.gwtproject.i18n.client;
-
-import com.google.gwt.core.client.JavaScriptObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,25 +23,30 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Set;
 
+import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.gwtproject.core.client.JavaScriptObject;
+
 /**
  * Provides dynamic string lookup of key/value string pairs defined in a
  * module's host HTML page. Each unique instance of <code>Dictionary</code> is
  * bound to a named JavaScript object that resides in the global namespace of
  * the host page's window object. The bound JavaScript object is used directly
  * as an associative array.
- * 
+ *
  * <p>
  * For example, suppose you define the following JavaScript object in your host
  * page:
- * 
+ *
  * {@gwt.include com/google/gwt/examples/i18n/ThemeDictionaryExample.js}
- * 
+ *
  * You can then use a <code>Dictionary</code> to access the key/value pairs
  * above:
- * 
+ *
  * {@example com.google.gwt.examples.i18n.ThemeDictionaryExample#useThemeDictionary()}
  * </p>
- * 
+ *
  * <p>
  * Unlike the family of interfaces that extend
  * {@link org.gwtproject.i18n.client.Localizable} which support static
@@ -53,7 +56,7 @@ import java.util.Set;
  * unable discard unused dictionary values since the structure cannot be
  * statically analyzed.
  * </p>
- * 
+ *
  * <h3>A Caveat Regarding Locale</h3>
  * The module's host page completely determines the mappings defined for each
  * dictionary without regard to the <code>locale</code> client property. Thus,
@@ -61,16 +64,16 @@ import java.util.Set;
  * types and may provide the simplest form of integration with existing
  * localization systems which were not specifically designed to use GWT's
  * <code>locale</code> client property.
- * 
+ *
  * <p>
  * See {@link org.gwtproject.i18n.client.Localizable} for background on the
  * <code>locale</code> client property.
  * </p>
- * 
+ *
  * <h3>Required Module</h3>
  * Modules that use this interface should inherit
  * <code>org.gwtproject.i18n.I18N</code>.
- * 
+ *
  * {@gwt.include com/google/gwt/examples/i18n/InheritsExample.gwt.xml}
  */
 public final class Dictionary {
@@ -82,7 +85,7 @@ public final class Dictionary {
   /**
    * Returns the <code>Dictionary</code> object associated with the given
    * name.
-   * 
+   *
    * @param name
    * @return specified dictionary
    * @throws MissingResourceException
@@ -108,7 +111,7 @@ public final class Dictionary {
 
   /**
    * Constructor for <code>Dictionary</code>.
-   * 
+   *
    * @param name name of linked JavaScript Object
    */
   private Dictionary(String name) {
@@ -127,29 +130,26 @@ public final class Dictionary {
 
   /**
    * Get the value associated with the given Dictionary key.
-   * 
+   *
    * We have to call Object.hasOwnProperty to verify that the value is
    * defined on this object, rather than a superclass, since normal Object
    * properties are also visible on this object.
-   * 
+   *
    * @param key to lookup
    * @return the value
    * @throws MissingResourceException if the value is not found
    */
-  public native String get(String key) /*-{
-    // In Firefox, jsObject.hasOwnProperty(key) requires a primitive string
-    key = String(key);
-    var map = this.@org.gwtproject.i18n.client.Dictionary::dict;
-    var value = map[key];
-    if (value == null || !map.hasOwnProperty(key)) {
-      this.@org.gwtproject.i18n.client.Dictionary::resourceError(Ljava/lang/String;)(key);
+  public String get(String key) {
+    JsPropertyMap dict = Js.asPropertyMap(this.dict);
+    if(!dict.has(key)) {
+      resourceError(key);
     }
-    return String(value);
-  }-*/;
+    return dict.get(key).toString();
+  }
 
   /**
    * The set of keys associated with this dictionary.
-   * 
+   *
    * @return the Dictionary set
    */
   public Set<String> keySet() {
@@ -165,7 +165,7 @@ public final class Dictionary {
 
   /**
    * Collection of values associated with this dictionary.
-   * 
+   *
    * @return the values
    */
   public Collection<String> values() {
@@ -179,33 +179,34 @@ public final class Dictionary {
     throw new MissingResourceException(error, this.toString(), key);
   }
 
-  private native void addKeys(HashSet<String> s) /*-{
-    var map = this.@org.gwtproject.i18n.client.Dictionary::dict
-    for (var key in map) {
-      if (map.hasOwnProperty(key)) {
-        s.@java.util.HashSet::add(Ljava/lang/Object;)(key);
+  private void addKeys(HashSet<String> s) {
+    JsPropertyMap map = Js.asPropertyMap(this.dict);
+    map.forEach(key -> {
+      if(map.has(key)) { // TODO Check this
+        s.add(key);
       }
-    }
-  }-*/;
+    });
+  }
 
-  private native void addValues(ArrayList<String> s) /*-{
-    var map = this.@org.gwtproject.i18n.client.Dictionary::dict
-    for (var key in map) {
-      if (map.hasOwnProperty(key)) {
-        var value = this.@org.gwtproject.i18n.client.Dictionary::get(Ljava/lang/String;)(key);
-        s.@java.util.ArrayList::add(Ljava/lang/Object;)(value);
+  private void addValues(ArrayList<String> s) {
+    JsPropertyMap map = Js.asPropertyMap(this.dict);
+    map.forEach(key -> {
+      if(map.has(key)) { // TODO Check this
+        s.add(get(key));
       }
-    }
-  }-*/;
+    });
+  }
 
-  private native void attach(String name)/*-{
+  private void attach(String name) {
     try {
-      if (typeof($wnd[name]) != "object") {
-        @org.gwtproject.i18n.client.Dictionary::resourceErrorBadType(Ljava/lang/String;)(name);
+      if(Js.asPropertyMap(DomGlobal.window).has(name)){
+        if (!(Js.asPropertyMap(DomGlobal.window).get(name) instanceof Object)) {
+          resourceErrorBadType(name);
+        }
       }
-      this.@org.gwtproject.i18n.client.Dictionary::dict = $wnd[name];
-    } catch(e) {
-      @org.gwtproject.i18n.client.Dictionary::resourceErrorBadType(Ljava/lang/String;)(name);
+      dict = Js.uncheckedCast(Js.asPropertyMap(DomGlobal.window).get(name));
+    } catch (Exception e) {
+      resourceErrorBadType(name);
     }
-  }-*/;
+  }
 }

@@ -16,8 +16,8 @@
 
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArrayString;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.core.client.JsArrayString;
 import org.gwtproject.i18n.client.constants.TimeZoneConstants;
 import com.google.gwt.junit.client.GWTTestCase;
 

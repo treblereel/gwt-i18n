@@ -19,6 +19,7 @@ import org.gwtproject.i18n.client.constants.NumberConstants;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 /**
  * Formats and parses numbers using locale-sensitive patterns.
@@ -781,9 +782,10 @@ public class NumberFormat {
    * @param digits number of digits of precision to include
    * @return non-localized string representation of {@code d}
    */
-  private static native String toPrecision(double d, int digits) /*-{
-    return d.toPrecision(digits);
-  }-*/;
+  private static String toPrecision(double d, int digits) {
+    return new BigDecimal(d, new MathContext(digits)).toString();
+
+  }
 
   /**
    * Information about the currency being used.

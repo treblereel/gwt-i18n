@@ -16,8 +16,8 @@
 package org.gwtproject.i18n.shared;
 
 import org.gwtproject.i18n.client.HasDirection.Direction;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.regexp.shared.SplitResult;
+import org.gwtproject.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.SplitResult;
 
 /**
  * Utility functions for performing common Bidi tests on strings.

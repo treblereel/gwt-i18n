@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.dom.client.Element;
+import org.gwtproject.dom.client.Element;
 import org.gwtproject.i18n.client.HasDirection.Direction;
 
 /**

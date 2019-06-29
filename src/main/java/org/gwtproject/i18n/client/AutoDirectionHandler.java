@@ -15,10 +15,10 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import org.gwtproject.event.dom.client.HasKeyUpHandlers;
+import org.gwtproject.event.dom.client.KeyUpEvent;
+import org.gwtproject.event.dom.client.KeyUpHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.i18n.client.HasDirection.Direction;
 import org.gwtproject.i18n.shared.DirectionEstimator;
 import org.gwtproject.i18n.shared.HasDirectionEstimator;
@@ -31,7 +31,7 @@ import org.gwtproject.i18n.shared.WordCountDirectionEstimator;
  * that takes text input, while the text is being entered.
  */
 public class AutoDirectionHandler implements KeyUpHandler,
-    HasDirectionEstimator {
+                                             HasDirectionEstimator {
 
   /**
    * The interface an object must implement in order to add an
@@ -39,7 +39,8 @@ public class AutoDirectionHandler implements KeyUpHandler,
    *
    * TODO(tomerigo): add Paste and Input events once they're available in GWT.
    */
-  public interface Target extends HasDirection, HasKeyUpHandlers {
+  public interface Target extends HasDirection,
+                                  HasKeyUpHandlers {
     /**
      * Gets this object's text.
      */

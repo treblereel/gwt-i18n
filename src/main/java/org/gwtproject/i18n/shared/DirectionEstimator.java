@@ -16,7 +16,7 @@
 package org.gwtproject.i18n.shared;
 
 import org.gwtproject.i18n.client.HasDirection.Direction;
-import com.google.gwt.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtml;
 
 /**
  * Interface for direction estimators.

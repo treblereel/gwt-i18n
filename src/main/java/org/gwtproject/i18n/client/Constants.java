@@ -241,7 +241,7 @@ public interface Constants extends LocalizableResource {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   @Documented
-  public @interface DefaultBooleanValue {
+  @interface DefaultBooleanValue {
     boolean value();
   }
 

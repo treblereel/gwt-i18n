@@ -16,12 +16,14 @@
 package org.gwtproject.i18n.client.impl;
 
 import com.google.gwt.core.client.GWT;
+import org.gwtproject.dom.client.Document;
 import org.gwtproject.i18n.client.DateTimeFormatInfo;
 import org.gwtproject.i18n.client.LocalizedNames;
 import org.gwtproject.i18n.client.constants.NumberConstants;
 import org.gwtproject.i18n.client.constants.NumberConstantsImpl;
 import org.gwtproject.i18n.client.impl.cldr.DateTimeFormatInfoImpl;
 import org.gwtproject.i18n.client.impl.cldr.LocalizedNamesImpl;
+import org.gwtproject.user.window.client.Window;
 
 /**
  * Implementation detail of LocaleInfo -- not a public API and subject to
@@ -38,7 +40,10 @@ public class LocaleInfoImpl {
    * Returns the runtime locale (note that this requires the i18n locale property
    * provider's assistance).
    */
-  static native String getRuntimeLocale() /*-{
+  static String getRuntimeLocale() {
+    throw new UnsupportedOperationException();
+
+  } /*-{
     return $wnd['__gwt_Locale'];
   }-*/;
 
@@ -105,14 +110,15 @@ public class LocaleInfoImpl {
    * @return an implementation of {@link LocalizedNames} for this locale.
    */
   public LocalizedNames getLocalizedNames() {
-    return GWT.create(LocalizedNamesImpl.class);
+    return new LocalizedNamesImpl();
   }
 
   /**
    * Returns a NumberConstants instance appropriate for this locale.
    */
   public NumberConstants getNumberConstants() {
-    return GWT.create(NumberConstantsImpl.class);
+    throw new UnsupportedOperationException();
+    //return new NumberConstantsImpl();
   }
 
   /**

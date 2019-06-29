@@ -18,9 +18,9 @@ package org.gwtproject.i18n.shared;
 
 import org.gwtproject.i18n.client.HasDirection.Direction;
 import org.gwtproject.i18n.client.LocaleInfo;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
 
 import java.util.HashMap;
 

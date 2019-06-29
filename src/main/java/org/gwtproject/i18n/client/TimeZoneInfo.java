@@ -16,10 +16,11 @@
 
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.core.client.JsonUtils;
+import jsinterop.base.Js;
+import org.gwtproject.core.client.JavaScriptObject;
+import org.gwtproject.core.client.JsArrayInteger;
+import org.gwtproject.core.client.JsArrayString;
+import org.gwtproject.core.client.JsonUtils;
 
 /**
  * A JavaScript Overlay type on top of the JSON data describing everything we
@@ -44,15 +45,19 @@ public class TimeZoneInfo extends JavaScriptObject {
   
   protected TimeZoneInfo() { }
   
-  public final native String getID() /*-{ return this.id; }-*/;
+  public final String getID() {
+    return Js.asPropertyMap(this).get("id").toString();
+  }
 
-  public final native JsArrayString getNames() /*-{
-    return this.names;
-  }-*/;
+  public final JsArrayString getNames() {
+    return Js.uncheckedCast(Js.asPropertyMap(this).get("names"));
+  }
   
-  public final native int getStandardOffset() /*-{ return this.std_offset }-*/;
+  public final int getStandardOffset() {
+    return Js.uncheckedCast(Js.asPropertyMap(this).get("std_offset"));
+  }
   
-  public final native JsArrayInteger getTransitions() /*-{
-    return this.transitions;
-  }-*/;
+  public final JsArrayInteger getTransitions() {
+    return Js.uncheckedCast(Js.asPropertyMap(this).get("transitions"));
+  }
 }

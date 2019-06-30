@@ -18,6 +18,8 @@ package org.gwtproject.i18n.client;
 import org.gwtproject.i18n.client.LocalizableResource.GenerateKeys;
 import com.google.gwt.safehtml.shared.SafeHtml;
 
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Base interface to test annotation inheritance.
  *
@@ -27,7 +29,8 @@ import com.google.gwt.safehtml.shared.SafeHtml;
  */
 // Note specifically using the old MD5KeyGenerator to make sure still have some
 // coverage of it.
-@GenerateKeys("org.gwtproject.i18n.rebind.keygen.MD5KeyGenerator")
+@I18N
+@GenerateKeys("org.gwtproject.i18n.rg.rebind.keygen.MD5KeyGenerator")
 public interface CommonInterfaceAnnotations extends Messages {
 
   @DefaultMessage("foo")

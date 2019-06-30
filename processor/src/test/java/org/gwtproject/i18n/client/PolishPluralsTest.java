@@ -21,6 +21,8 @@ import com.google.gwt.junit.client.GWTTestCase;
 /**
  * Tests Polish plurals, which is one of the most complicated.
  */
+
+@I18N
 public class PolishPluralsTest extends GWTTestCase {
 
   /**

@@ -18,6 +18,8 @@ package org.gwtproject.i18n.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Tests custom plural rules, including as an inner class.
  * 
@@ -28,12 +30,13 @@ public class CustomPluralsTest extends GWTTestCase {
   /**
    * Messages interface with a custom plural rule.
    */
+  @I18N
   public interface MyMessages extends Messages {
 
     /**
      * A custom plural rule that returns "0", "1", or "other".
      */
-    public static class CustomPluralRule implements PluralRule {
+    class CustomPluralRule implements PluralRule {
        @Override
       public PluralForm[] pluralForms() {
           return new PluralForm[] {

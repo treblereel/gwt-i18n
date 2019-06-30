@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.gwtproject.resources.rg.util;
+package org.gwtproject.i18n.rg.util;
 
 import java.io.*;
 

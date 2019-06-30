@@ -15,11 +15,15 @@
  */
 package org.gwtproject.i18n.client.gen;
 
+import org.gwtproject.i18n.client.I18N;
+import org.gwtproject.i18n.client.Messages;
+
 /**
  * Interface to represent the messages contained in resource bundle:
  * 'org/gwtproject/i18n/client/gen/SingleMessages.properties'.
  */
-public interface SingleMessages extends org.gwtproject.i18n.client.Messages {
+@I18N
+public interface SingleMessages extends Messages {
 
   /**
    * Translated "me".

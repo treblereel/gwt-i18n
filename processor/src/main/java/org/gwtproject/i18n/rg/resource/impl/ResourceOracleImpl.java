@@ -9,7 +9,6 @@ import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.StandardLocation;
@@ -57,7 +56,9 @@ public class ResourceOracleImpl implements ResourceOracle {
 
     @Override
     public URL[] findResources(TreeLogger logger, ExecutableElement method) throws UnableToCompleteException {
-        TypeElement returnType = (TypeElement) MoreTypes.asElement(method.getReturnType());
+        throw new UnsupportedOperationException();
+
+/*        TypeElement returnType = (TypeElement) MoreTypes.asElement(method.getReturnType());
         assert returnType.getKind().isInterface() || returnType.getKind().isClass();
         DefaultExtensions annotation = ResourceGeneratorUtil.findDefaultExtensionsInClassHierarcy(returnType);
         String[] extensions;
@@ -66,11 +67,14 @@ public class ResourceOracleImpl implements ResourceOracle {
         } else {
             extensions = new String[0];
         }
-        return findResources(logger, method, extensions);
+        return findResources(logger, method, extensions);*/
     }
 
     @Override
     public URL[] findResources(TreeLogger logger, ExecutableElement method, String[] defaultSuffixes) throws UnableToCompleteException {
+        throw new UnsupportedOperationException();
+
+/*
         boolean error = false;
         Source resourceAnnotation = method.getAnnotation(Source.class);
         URL[] toReturn = null;
@@ -112,7 +116,7 @@ public class ResourceOracleImpl implements ResourceOracle {
             throw new UnableToCompleteException();
         }
 
-        return toReturn;
+        return toReturn;*/
     }
 
     private URL[] getResourcesByExtensions(ExecutableElement method, String[] extensions) throws UnableToCompleteException {

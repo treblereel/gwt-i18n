@@ -22,12 +22,13 @@ import com.google.gwt.safehtml.shared.SafeHtml;
  * by this interface.  In this case, we verify that this interface's keys
  * are based on the MD5 hash of the default value.
  */
+@I18N
 public interface TestAnnotationInheritance extends CommonInterfaceAnnotations {
 
-  @Messages.DefaultMessage("bar")
+  @DefaultMessage("bar")
   String bar();
 
-  @Messages.DefaultMessage("bar")
+  @DefaultMessage("bar")
   @Key("37B51D194A7513E45B56F6524F2D51F2")
   SafeHtml barAsSafeHtml();
 }

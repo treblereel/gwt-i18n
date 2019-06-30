@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n.ext;
 
-import org.gwtproject.resources.context.AptContext;
+import org.gwtproject.i18n.context.AptContext;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;

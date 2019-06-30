@@ -23,12 +23,12 @@ import org.gwtproject.i18n.server.MessageInterfaceTestBase;
  */
 public class ReflectionMessageInterfaceTest extends MessageInterfaceTestBase {
 
-  private static ReflectionMessageInterface getMessageInterfaceInstance() {
+/*  private static ReflectionMessageInterface getMessageInterfaceInstance() {
     return new ReflectionMessageInterface(new GwtLocaleFactoryImpl(),
         TEST_CLASS);
   }
 
   public ReflectionMessageInterfaceTest() {
     super(getMessageInterfaceInstance());
-  }
+  }*/
 }

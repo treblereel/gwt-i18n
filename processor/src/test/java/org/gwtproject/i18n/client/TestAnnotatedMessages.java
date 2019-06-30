@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * Test of Messages generation using annotations.
  */
+@I18N
 @DefaultLocale("en")
 // @GenerateKeys("org.gwtproject.i18n.server.keygen.MD5KeyGenerator")
 @GenerateKeys("org.gwtproject.i18n.server.keygen.MethodNameKeyGenerator") // default
@@ -35,7 +36,7 @@ public interface TestAnnotatedMessages extends Messages {
   /**
    * Represents the gender of a person in a message.
    */
-  public enum Gender {
+  enum Gender {
     MALE,
     FEMALE,
     UNKNOWN

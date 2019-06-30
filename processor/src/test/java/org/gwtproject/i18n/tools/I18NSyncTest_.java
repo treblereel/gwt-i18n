@@ -15,6 +15,7 @@
  */
 package org.gwtproject.i18n.tools;
 
+import com.google.gwt.i18n.tools.I18NSync;
 import junit.framework.TestCase;
 
 import java.io.File;

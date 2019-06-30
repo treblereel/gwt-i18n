@@ -26,6 +26,7 @@ public class ArabicPluralsTest extends GWTTestCase {
   /**
    * Shorter message for just testing that Arabic plurals work properly.
    */
+  @I18N
   public interface PluralMessage extends Messages {
     @DefaultMessage("{0} widgets")
     @AlternateMessage({"one", "A widget"})

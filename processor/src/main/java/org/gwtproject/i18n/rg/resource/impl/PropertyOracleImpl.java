@@ -32,7 +32,11 @@ public class PropertyOracleImpl implements PropertyOracle {
     public SelectionProperty getSelectionProperty(TreeLogger logger, String propertyName) throws UnableToCompleteException {
         String value = System.getProperty(propertyName);
         if (value != null) {
-            return new StandardSelectionProperty(propertyName, value);
+            try {
+                return new StandardSelectionProperty(propertyName, value, configurationProperties.getConfigurationProperty(propertyName).asSingleValue());
+            } catch (BadPropertyValueException e) {
+                throw new UnableToCompleteException(e);
+            }
         }
         logger.log(TreeLogger.Type.ERROR, "Unable to get selection property : " + propertyName);
         throw new UnableToCompleteException();

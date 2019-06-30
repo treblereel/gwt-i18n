@@ -28,7 +28,7 @@ public interface PluralRule {
    * will be used during code generation and by tools to provide
    * information to translators.
    */
-  public static class PluralForm {
+  class PluralForm {
     private final String name;
     private final String description;
     private final boolean noWarn;

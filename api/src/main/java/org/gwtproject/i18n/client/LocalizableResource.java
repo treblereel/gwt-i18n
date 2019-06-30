@@ -94,7 +94,7 @@ public interface LocalizableResource extends Localizable {
     /**
      * Fully-qualified class names of the generator classes. Each class must
      * implement org.gwtproject.i18n.server.MessageCatalogFactory
-     * (org.gwtproject.i18n.rebind.format.MessageCatalogFormat still works, but
+     * (org.gwtproject.i18n.rg.rebind.format.MessageCatalogFormat still works, but
      * is deprecated).
      * 
      * Strings are used here instead of class literals because the generators

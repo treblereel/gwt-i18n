@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n;
 
-import com.google.gwt.core.ext.TreeLogger;
+import org.gwtproject.i18n.ext.TreeLogger;
 
 /**
  * A TreeLogger which throws an assertion failure if any error is logged.

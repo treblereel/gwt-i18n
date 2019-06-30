@@ -21,6 +21,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
  * Interface to represent the messages contained in resource bundle:
  * 'org/gwtproject/i18n/client/gen/TestMessages.properties'.
  */
+@I18N
 public interface TestMessages extends org.gwtproject.i18n.client.Messages {
 
   /**

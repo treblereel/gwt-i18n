@@ -11,8 +11,7 @@ import javax.tools.JavaFileObject;
 import java.io.*;
 import java.util.*;
 
-import static org.gwtproject.resources.rg.resource.ConfigurationProperties.KEY_CLIENT_BUNDLE_CACHE_LOCATION;
-
+import static org.gwtproject.i18n.rg.resource.ConfigurationProperties.KEY_CLIENT_BUNDLE_CACHE_LOCATION;
 
 /**
  * @author Dmitrii Tikhomirov
@@ -20,6 +19,7 @@ import static org.gwtproject.resources.rg.resource.ConfigurationProperties.KEY_C
  */
 public class StandardGeneratorContext implements GeneratorContext {
     private static DiskCache diskCache = DiskCache.INSTANCE;
+
     private final AptContext aptContext;
     private final Map<String, PendingResource> pendingResources = new HashMap<>();
     private final Map<PrintWriter, Generated> uncommittedGeneratedCupsByPrintWriter =

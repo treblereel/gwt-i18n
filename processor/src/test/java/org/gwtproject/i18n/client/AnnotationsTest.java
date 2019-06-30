@@ -27,6 +27,7 @@ public class AnnotationsTest extends GWTTestCase {
   /**
    * First grandparent for test.
    */
+  @I18N
   public interface GP1 extends TestConstants {
     @DefaultStringValue("gp1 annot")
     String gp1();

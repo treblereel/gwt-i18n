@@ -25,9 +25,10 @@ import java.util.Map;
 /**
  * Test of Constants generation using annotations.
  */
+@I18N
 @DefaultLocale("en-US")
-@GenerateKeys // ("org.gwtproject.i18n.rebind.MD5") - default
-// @Generate(format = "org.gwtproject.i18n.rebind.format.PropertiesFormat")
+@GenerateKeys // ("org.gwtproject.i18n.rg.rebind.MD5") - default
+// @Generate(format = "org.gwtproject.i18n.rg.rebind.format.PropertiesFormat")
 @Generate(format = "org.gwtproject.i18n.server.PropertyCatalogFactory")
 public interface TestAnnotatedConstantsGenMD5 extends Constants {
 

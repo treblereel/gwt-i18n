@@ -18,6 +18,9 @@ package org.gwtproject.i18n.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 
+import static org.gwtproject.i18n.client.Constants.*;
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Tests regional inheritance for es_MX.
  */
@@ -26,6 +29,7 @@ public class I18N_es_MX_Test extends GWTTestCase {
   /**
    * Test locale region inheritance with Messages.
    */
+  @I18N
   public interface MyMessages extends Messages {
     @DefaultMessage("default")
     String getSourceLocale();

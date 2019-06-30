@@ -19,6 +19,9 @@ import com.google.gwt.core.client.GWT;
 import org.gwtproject.i18n.client.impl.CldrImpl;
 import com.google.gwt.junit.client.GWTTestCase;
 
+import static org.gwtproject.i18n.client.Constants.*;
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Tests Hebrew deprecated alias.
  */
@@ -27,6 +30,7 @@ public class I18N_iw_Test extends GWTTestCase {
   /**
    * Test deprecated locale aliases with Constants.
    */
+  @I18N
   public interface MyConstants extends Constants {
     @DefaultStringValue("default")
     String getSourceLocale();

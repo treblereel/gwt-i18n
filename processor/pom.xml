@@ -52,6 +52,21 @@
       <version>${guava.version}</version>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>tapestry</groupId>
+      <artifactId>tapestry</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.8</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -60,6 +75,15 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -124,8 +148,12 @@
             <configuration>
               <properties>
                 <property>
-                  <name>CssResource.style</name>
-                  <value>obf</value>
+                  <name>locale</name>
+                  <value>default</value>
+                </property>
+                <property>
+                  <name>runtime.locales</name>
+                  <value>en</value>
                 </property>
               </properties>
             </configuration>

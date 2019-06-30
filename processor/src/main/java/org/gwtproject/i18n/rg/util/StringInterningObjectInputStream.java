@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.gwtproject.resources.rg.util;
+package org.gwtproject.i18n.rg.util;
 
 import java.io.IOException;
 import java.io.InputStream;

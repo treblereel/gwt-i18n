@@ -18,17 +18,14 @@ package org.gwtproject.i18n.context;
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
 import com.google.common.collect.ImmutableSet;
-import org.gwtproject.i18n.client.ClientBundleWithLookup;
-import org.gwtproject.i18n.client.Resource;
-import org.gwtproject.i18n.client.ResourcePrototype;
+import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.ext.*;
-import org.gwtproject.i18n.rg.BundleResourceGenerator;
 import org.gwtproject.i18n.rg.Generator;
 import org.gwtproject.i18n.rg.NameFactory;
-import org.gwtproject.resources.rg.rebind.ClassSourceFileComposerFactory;
-import org.gwtproject.resources.rg.util.MoreTypeUtils;
+import org.gwtproject.i18n.rg.rebind.ClassSourceFileComposerFactory;
+import org.gwtproject.i18n.rg.util.MoreTypeUtils;
 import org.gwtproject.i18n.rg.util.SourceWriter;
-import org.gwtproject.resources.rg.util.Util;
+import org.gwtproject.i18n.rg.util.Util;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -100,7 +97,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
 
     private AptContext aptContext;
 
-    @Override
+    //@Override
     public void generate(TreeLogger logger, GeneratorContext generatorContext, Set<TypeElement> bundles) throws UnableToCompleteException {
         this.aptContext = generatorContext.getAptContext();
         for (TypeElement bundle : bundles) {
@@ -178,7 +175,12 @@ public abstract class AbstractClientBundleGenerator extends Generator {
         Types types = generatorContext.getAptContext().types;
         Elements elements = generatorContext.getAptContext().elements;
         logger = logger.branch(TreeLogger.DEBUG, "Processing " + sourceType);
+
+
+     /*
         Map<Class<? extends ResourceGenerator>, List<ExecutableElement>> toReturn = new LinkedHashMap<>();
+
+
 
         TypeElement bundleWithLookupType = MoreTypeUtils.getTypeElementFromClass(ClientBundleWithLookup.class, aptContext.elements);
         assert bundleWithLookupType != null;
@@ -228,14 +230,16 @@ public abstract class AbstractClientBundleGenerator extends Generator {
             throw new UnableToCompleteException();
         }
 
-        return toReturn;
+        return toReturn; */
+
+        throw new UnableToCompleteException();
     }
 
     /**
      * Given a ExecutableElement, find the a ResourceGenerator class that will be able to
      * provide an implementation of the method.
      */
-    private Class<? extends ResourceGenerator> findResourceGenerator(TreeLogger logger, ExecutableElement method) throws UnableToCompleteException {
+   /* private Class<? extends ResourceGenerator> findResourceGenerator(TreeLogger logger, ExecutableElement method) throws UnableToCompleteException {
         TypeElement resourceType = MoreTypes.asTypeElement(method.getReturnType());
         if (aptContext.generators.containsKey(resourceType)) {
             return aptContext.generators.get(resourceType);
@@ -249,9 +253,9 @@ public abstract class AbstractClientBundleGenerator extends Generator {
                 }
             }
 
-            /**
+            *//**
              * This is a special case of ResourceGenerator that handles nested bundles.
-             */
+             *//*
             if (parents.size() == 1) {
                 boolean theSame = aptContext.types.isSameType(parents.get(0), aptContext.elements.getTypeElement(Object.class.getCanonicalName()).asType());
                 if (theSame)
@@ -262,7 +266,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
                 + resourceType + " or its supertypes");
         throw new UnableToCompleteException();
 
-    }
+    }*/
 
     private Map<ResourceGenerator, List<ExecutableElement>> initAndPrepare(
             TreeLogger logger,
@@ -350,7 +354,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
             ClassSourceFileComposerFactory f = new ClassSourceFileComposerFactory(packageName, generatedSimpleSourceName);
 
             // Used by the map methods
-            f.addImport(ResourcePrototype.class.getName());
+            f.addImport(Messages.class.getName());
 
             // The whole point of this exercise
             f.addImplementedInterface(Util.getQualifiedSourceName(bundle, aptContext.elements));
@@ -378,7 +382,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
              *name, but should not include any sub - bundles.
              */
             writeMapMethods(sw, taskList, hashMapStringResource, resourceMapField);
-            sw.commit(logger);
+            //sw.commit(logger);
         }
 
         finish(logger, resourceContext, generators.keySet());
@@ -544,48 +548,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
             ResourceGenerator>, List<ExecutableElement>> taskList,
                                  String resourceMapType, String resourceMapField) {
 
-        // Complete the IRB contract
-        sw.println("public ResourcePrototype[] getResources() {");
-        sw.indent();
-        sw.println("return new ResourcePrototype[] {");
-        sw.indent();
-        for (List<ExecutableElement> methods : taskList.values()) {
-            for (ExecutableElement method : methods) {
-                //ignore ClientBundles TODO
-                TypeElement methodType = (TypeElement) MoreTypes.asElement(method.getReturnType());
-                if (methodType.getAnnotation(Resource.class) == null)
-                    sw.println(method.getSimpleName() + "(), ");
-            }
-        }
-        sw.outdent();
-        sw.println("};");
-        sw.outdent();
-        sw.println("}");
 
-        // Map implementation for dev mode.
-        sw.println("public ResourcePrototype getResource(String name) {");
-        sw.indent();
-        sw.indent();
-        sw.println("if (" + resourceMapField + " == null) {");
-        sw.indent();
-        sw.println(resourceMapField + " = new "
-                + resourceMapType + "();");
-        for (List<ExecutableElement> list : taskList.values()) {
-            for (ExecutableElement method : list) {
-                //ignore ClientBundles TODO
-                TypeElement methodType = (TypeElement) MoreTypes.asElement(method.getReturnType());
-                if (methodType.getAnnotation(Resource.class) == null) {
-                    sw.println(resourceMapField + ".put(\"" + method.getSimpleName() + "\", "
-                            + method.getSimpleName() + "());");
-                }
-            }
-        }
-        sw.outdent();
-        sw.println("}");
-        sw.println("return resourceMap.get(name);");
-        sw.outdent();
-        sw.outdent();
-        sw.println("}");
 
     }
 

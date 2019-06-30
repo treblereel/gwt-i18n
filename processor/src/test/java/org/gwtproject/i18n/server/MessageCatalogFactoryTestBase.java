@@ -16,13 +16,12 @@
 package org.gwtproject.i18n.server;
 
 import org.gwtproject.i18n.client.Constants;
+import org.gwtproject.i18n.client.I18N;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.LocalizableResource.DefaultLocale;
 import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.server.MessageCatalogFactory.Context;
 import org.gwtproject.i18n.server.MessageCatalogFactory.Writer;
-import org.gwtproject.i18n.server.impl.ReflectionMessageInterface;
-import org.gwtproject.i18n.server.testing.MockMessageCatalogContext;
 import org.gwtproject.i18n.shared.GwtLocaleFactory;
 import com.google.gwt.safehtml.shared.SafeHtml;
 
@@ -36,6 +35,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import static org.gwtproject.i18n.client.Constants.*;
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Base class for tests of {@link MessageCatalogFactory} implementations.
  */
@@ -47,6 +49,7 @@ public abstract class MessageCatalogFactoryTestBase extends TestCase {
   /**
    * Test various messages with alternate forms.
    */
+  @I18N
   public interface AlternateFormMessages extends Messages {
     @Description("Notification that you gave access to another person")
     @DefaultMessage("You gave them access to your profile")
@@ -118,7 +121,7 @@ public abstract class MessageCatalogFactoryTestBase extends TestCase {
     String orange();
   }
 
-  protected static BufferedReader getReader(byte[] bytes)
+/*  protected static BufferedReader getReader(byte[] bytes)
       throws UnsupportedEncodingException {
     return new BufferedReader(new InputStreamReader(
         new ByteArrayInputStream(bytes), "UTF8"));
@@ -132,7 +135,7 @@ public abstract class MessageCatalogFactoryTestBase extends TestCase {
       throws MessageProcessingException, IOException {
     MessageCatalogFactory factory = getMessageCatalogFactory();
     MessageInterface msgIntf = new ReflectionMessageInterface(localeFactory,
-        clazz);
+                                                              clazz);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Context ctx = new MockMessageCatalogContext(baos);
     Writer writer = factory.getWriter(ctx,
@@ -153,5 +156,5 @@ public abstract class MessageCatalogFactoryTestBase extends TestCase {
     for (String line : lines) {
       assertEquals(error + " - line " + (++lineNum), line, reader.readLine());
     }
-  }
+  }*/
 }

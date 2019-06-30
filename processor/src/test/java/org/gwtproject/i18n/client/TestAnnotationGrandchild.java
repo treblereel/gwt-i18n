@@ -21,12 +21,13 @@ import com.google.gwt.safehtml.shared.SafeHtml;
  * Verifies that class-level annotations on grandparent interface are still honored,
  * to make sure multiple levels of inheritance are handled.
  */
+@I18N
 public interface TestAnnotationGrandchild extends TestAnnotationInheritance {
 
-  @Messages.DefaultMessage("baz")
+  @DefaultMessage("baz")
   String baz();
 
-  @Messages.DefaultMessage("baz")
+  @DefaultMessage("baz")
   @Key("73FEFFA4B7F6BB68E44CF984C85F6E88")
   SafeHtml bazAsSafeHtml();
 }

@@ -125,7 +125,7 @@ import java.lang.annotation.Target;
  * complete example of using annotations in this way is:
  * 
  * <code><pre>
- * &#64;Generate(format = "org.gwtproject.i18n.rebind.format.PropertiesFormat")
+ * &#64;Generate(format = "org.gwtproject.i18n.rg.rebind.format.PropertiesFormat")
  * &#64;DefaultLocale("en_US")
  * public interface MyMessages extends Messages {
  *   &#64;Key("1234")
@@ -171,262 +171,262 @@ import java.lang.annotation.Target;
  * are created using {@link com.google.gwt.core.client.GWT#create(Class)}.
  */
 public interface Messages extends LocalizableResource {
-
-  /**
-   * Provides alternate forms of a message, such as are needed when plural
-   * forms are used or a placeholder has known gender. The selection of which
-   * form to use is based on the value of the arguments marked
-   * PluralCount and/or Select.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("You have {0} widgets.")
-   *   &#64;AlternateMessage({"one", "You have one widget.")
-   *   String example(&#64;PluralCount int count);
-   * </pre></code>
-   * </p>
-   * 
-   * <p>If multiple {@link PluralCount} or {@link Select} parameters are
-   * supplied, the forms for each, in the order they appear in the parameter
-   * list, are supplied separated by a vertical bar ("|").  Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("You have {0} messages and {1} notifications.")
-   *   &#64;AlternateMessage({
-   *       "=0|=0", "You have no messages or notifications."
-   *       "=0|one", "You have a notification."
-   *       "one|=0", "You have a message."
-   *       "one|one", "You have one message and one notification."
-   *       "other|one", "You have {0} messages and one notification."
-   *       "one|other", "You have one message and {1} notifications."
-   *   })
-   *   String messages(&#64;PluralCount int msgCount,
-   *       &#64;PluralCount int notifyCount);
-   * </pre></code>
-   * 
-   * Note that the number of permutations can grow quickly, and that the default
-   * message is used when every {@link PluralCount} or {@link Select} would use
-   * the "other" value.
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.METHOD)
-  @Documented
-  public @interface AlternateMessage {
-
     /**
-     * An array of pairs of strings containing the strings for different forms.
-     * 
-     * Each pair is the name of a form followed by the string in the source
-     * locale for that form.  Each form name is the name of a plural form if
-     * {@link PluralCount} is used, or the matching value if {@link Select} is
-     * used.  An example for a locale that has "none", "one", and "other" plural
-     * forms:
-     * 
+     * Provides alternate forms of a message, such as are needed when plural
+     * forms are used or a placeholder has known gender. The selection of which
+     * form to use is based on the value of the arguments marked
+     * PluralCount and/or Select.
+     *
+     * <p>Example:
      * <code><pre>
-     * &#64;DefaultMessage("{0} widgets")
-     * &#64;AlternateMessage({"none", "No widgets", "one", "One widget"})
-     * </pre>
-     * 
-     * Note that the plural form "other" gets the translation specified in
-     * {@code &#64;DefaultMessage}, as does any {@code &#64;Select} value not
-     * listed. 
-     * 
-     * If more than one way of selecting a translation exists, they will be
-     * combined, separated with {@code |}, in the order they are supplied as
-     * arguments in the method.  For example:
-     * <code><pre>
-     *   &#64;DefaultMessage("{0} gave away their {2} widgets")
-     *   &#64;AlternateMesssage({
-     *     "MALE|other", "{0} gave away his {2} widgets",
-     *     "FEMALE|other", "{0} gave away her {2} widgets",
-     *     "MALE|one", "{0} gave away his widget",
-     *     "FEMALE|one", "{0} gave away her widget",
-     *     "other|one", "{0} gave away their widget",
-     *   })
-     *   String giveAway(String name, &#64;Select Gender gender,
-     *       &#64;PluralCount int count);
+     *   &#64;DefaultMessage("You have {0} widgets.")
+     *   &#64;AlternateMessage({"one", "You have one widget.")
+     *   String example(&#64;PluralCount int count);
      * </pre></code>
-     */
-    String[] value();
-  }
-
-  /**
-   * Default text to be used if no translation is found (and also used as the
-   * source for translation). Format should be that expected by
-   * {@link java.text.MessageFormat}.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("Don''t panic - you have {0} widgets left")
-   *   String example(int count)
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.METHOD)
-  @Documented
-  public @interface DefaultMessage {
-    String value();
-  }
-
-  /**
-   * An example of the annotated parameter to assist translators.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   String example(&#64;Example("/etc/passwd") String fileName)
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.PARAMETER)
-  public @interface Example {
-    String value();
-  }
-
-  /**
-   * Ignored except on parameters also tagged with {@link PluralCount}, and
-   * provides an offset to be subtracted from the value before a plural rule
-   * is chosen or the value is formatted.  Note that "=n" forms are evaluated
-   * before this offset is applied.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;PluralText({"=0", "No one has recommended this movie",
-   *     "=1", "{0} has recommended this movie",
-   *     "=2", "{0} and {1} have recommended this movie",
-   *     "one", "{0}, {1} and one other have recommended this movie"})
-   *   &#64;DefaultMessage("{0}, {1} and {2,number} others have recommended this movie")
-   *   String recommenders(&#64;Optional String rec1, &#64;Optional String rec2,
-   *     &#64;PluralCount &#64;Offset(2) int count);
-   * </pre></code>
-   * would result in
-   * <code><pre>
-   * recommenders("John", null, 1) => "John has..."
-   * recommenders("John", "Jane", 3) => "John, Jane, and one other..."
-   * recommenders("John", "Jane", 1402) => "John, Jane, and 1,400 others..."
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.PARAMETER)
-  public @interface Offset {
-    int value();
-  }
-
-  /**
-   * Indicates the specified parameter is optional and need not appear in a
-   * particular translation of this message.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   String example(&#64;Optional int count)
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.PARAMETER)
-  public @interface Optional {
-  }
-
-  /**
-   * Provides multiple plural forms based on a count. The selection of which
-   * plural form is performed by a PluralRule implementation.
-   * 
-   * This annotation is applied to a single parameter of a Messages subinterface
-   * and indicates that parameter is to be used to choose the proper plural form
-   * of the message. The parameter chosen must be of type short or int.
-   * 
-   * Optionally, a class literal referring to a PluralRule implementation can be
-   * supplied as the argument if the standard implementation is insufficient.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("You have {0} widgets.")
-   *   &#64;AlternateMessage({"one", "You have one widget."})
-   *   String example(&#64;PluralCount int count)
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.PARAMETER)
-  public @interface PluralCount {
-
-    /**
-     * The PluralRule implementation to use for this message. If not specified,
-     * the GWT-supplied one is used instead, which should cover most use cases.
-     * 
-     * <p>{@code PluralRule.class} is used as a default value here, which will
-     * be replaced during code generation with the default implementation.
+     * </p>
+     *
+     * <p>If multiple {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} or {@link org.gwtproject.i18n.client.annotations.Messages.Select} parameters are
+     * supplied, the forms for each, in the order they appear in the parameter
+     * list, are supplied separated by a vertical bar ("|").  Example:
+     * <code><pre>
+     *   &#64;DefaultMessage("You have {0} messages and {1} notifications.")
+     *   &#64;AlternateMessage({
+     *       "=0|=0", "You have no messages or notifications."
+     *       "=0|one", "You have a notification."
+     *       "one|=0", "You have a message."
+     *       "one|one", "You have one message and one notification."
+     *       "other|one", "You have {0} messages and one notification."
+     *       "one|other", "You have one message and {1} notifications."
+     *   })
+     *   String messages(&#64;PluralCount int msgCount,
+     *       &#64;PluralCount int notifyCount);
+     * </pre></code>
+     *
+     * Note that the number of permutations can grow quickly, and that the default
+     * message is used when every {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} or {@link org.gwtproject.i18n.client.annotations.Messages.Select} would use
+     * the "other" value.
      * </p>
      */
-    // http://bugs.sun.com/view_bug.do?bug_id=6512707
-    Class<? extends PluralRule> value() default org.gwtproject.i18n.client.PluralRule.class;
-  }
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Documented
+    @interface AlternateMessage {
 
-  /**
-   * Provides multiple plural forms based on a count. The selection of which
-   * plural form to use is based on the value of the argument marked
-   * PluralCount, which may also specify an alternate plural rule to use.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("You have {0} widgets.")
-   *   &#64;PluralText({"one", "You have one widget.")
-   *   String example(&#64;PluralCount int count)
-   * </pre></code>
-   * </p>
-   * 
-   * @deprecated use {@link AlternateMessage} instead
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.METHOD)
-  @Documented
-  @Deprecated
-  public @interface PluralText {
+        /**
+         * An array of pairs of strings containing the strings for different forms.
+         *
+         * Each pair is the name of a form followed by the string in the source
+         * locale for that form.  Each form name is the name of a plural form if
+         * {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} is used, or the matching value if {@link org.gwtproject.i18n.client.annotations.Messages.Select} is
+         * used.  An example for a locale that has "none", "one", and "other" plural
+         * forms:
+         *
+         * <code><pre>
+         * &#64;DefaultMessage("{0} widgets")
+         * &#64;AlternateMessage({"none", "No widgets", "one", "One widget"})
+         * </pre>
+         *
+         * Note that the plural form "other" gets the translation specified in
+         * {@code &#64;DefaultMessage}, as does any {@code &#64;Select} value not
+         * listed.
+         *
+         * If more than one way of selecting a translation exists, they will be
+         * combined, separated with {@code |}, in the order they are supplied as
+         * arguments in the method.  For example:
+         * <code><pre>
+         *   &#64;DefaultMessage("{0} gave away their {2} widgets")
+         *   &#64;AlternateMesssage({
+         *     "MALE|other", "{0} gave away his {2} widgets",
+         *     "FEMALE|other", "{0} gave away her {2} widgets",
+         *     "MALE|one", "{0} gave away his widget",
+         *     "FEMALE|one", "{0} gave away her widget",
+         *     "other|one", "{0} gave away their widget",
+         *   })
+         *   String giveAway(String name, &#64;Select Gender gender,
+         *       &#64;PluralCount int count);
+         * </pre></code>
+         */
+        String[] value();
+    }
 
     /**
-     * An array of pairs of strings containing the strings for different plural
-     * forms.
-     * 
-     * Each pair is the name of the plural form (as returned by
-     * PluralForm.toString) followed by the string for that plural form. An
-     * example for a locale that has "none", "one", and "other" plural forms:
-     * 
+     * Default text to be used if no translation is found (and also used as the
+     * source for translation). Format should be that expected by
+     * {@link java.text.MessageFormat}.
+     *
+     * <p>Example:
      * <code><pre>
-     * &#64;DefaultMessage("{0} widgets")
-     * &#64;PluralText({"none", "No widgets", "one", "One widget"})
-     * </pre>
-     * 
-     * "other" must not be included in this array as it will map to the
-     * DefaultMessage value.
+     *   &#64;DefaultMessage("Don''t panic - you have {0} widgets left")
+     *   String example(int count)
+     * </pre></code>
+     * </p>
      */
-    String[] value();
-  }
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Documented
+    @interface DefaultMessage {
+        String value();
+    }
 
-  /**
-   * Provides multiple forms based on a dynamic parameter.
-   * 
-   * This annotation is applied to a single parameter of a Messages subinterface
-   * and indicates that parameter is to be used to choose the proper form of the
-   * message. The parameter chosen must be of type Enum, String, boolean, or a
-   * primitive integral type.  This is frequently used to get proper gender for
-   * translations to languages where surrounding words depend on the gender of
-   * a person or noun.  This also marks the parameter as {@link Optional}.
-   * 
-   * <p>Example:
-   * <code><pre>
-   *   &#64;DefaultMessage("{0} likes their widgets.")
-   *   &#64;AlternateMessage({
-   *       "FEMALE", "{0} likes her widgets.",
-   *       "MALE", "{0} likes his widgets.",
-   *   })
-   *   String example(String name, &#64;Select Gender gender)
-   * </pre></code>
-   * </p>
-   */
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.PARAMETER)
-  public @interface Select {
-  }
+    /**
+     * An example of the annotated parameter to assist translators.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   String example(&#64;Example("/etc/passwd") String fileName)
+     * </pre></code>
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface Example {
+        String value();
+    }
+
+    /**
+     * Ignored except on parameters also tagged with {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount}, and
+     * provides an offset to be subtracted from the value before a plural rule
+     * is chosen or the value is formatted.  Note that "=n" forms are evaluated
+     * before this offset is applied.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   &#64;PluralText({"=0", "No one has recommended this movie",
+     *     "=1", "{0} has recommended this movie",
+     *     "=2", "{0} and {1} have recommended this movie",
+     *     "one", "{0}, {1} and one other have recommended this movie"})
+     *   &#64;DefaultMessage("{0}, {1} and {2,number} others have recommended this movie")
+     *   String recommenders(&#64;Optional String rec1, &#64;Optional String rec2,
+     *     &#64;PluralCount &#64;Offset(2) int count);
+     * </pre></code>
+     * would result in
+     * <code><pre>
+     * recommenders("John", null, 1) => "John has..."
+     * recommenders("John", "Jane", 3) => "John, Jane, and one other..."
+     * recommenders("John", "Jane", 1402) => "John, Jane, and 1,400 others..."
+     * </pre></code>
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface Offset {
+        int value();
+    }
+
+    /**
+     * Indicates the specified parameter is optional and need not appear in a
+     * particular translation of this message.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   String example(&#64;Optional int count)
+     * </pre></code>
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface Optional {
+    }
+
+    /**
+     * Provides multiple plural forms based on a count. The selection of which
+     * plural form is performed by a PluralRule implementation.
+     *
+     * This annotation is applied to a single parameter of a Messages subinterface
+     * and indicates that parameter is to be used to choose the proper plural form
+     * of the message. The parameter chosen must be of type short or int.
+     *
+     * Optionally, a class literal referring to a PluralRule implementation can be
+     * supplied as the argument if the standard implementation is insufficient.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   &#64;DefaultMessage("You have {0} widgets.")
+     *   &#64;AlternateMessage({"one", "You have one widget."})
+     *   String example(&#64;PluralCount int count)
+     * </pre></code>
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface PluralCount {
+
+        /**
+         * The PluralRule implementation to use for this message. If not specified,
+         * the GWT-supplied one is used instead, which should cover most use cases.
+         *
+         * <p>{@code PluralRule.class} is used as a default value here, which will
+         * be replaced during code generation with the default implementation.
+         * </p>
+         */
+        // http://bugs.sun.com/view_bug.do?bug_id=6512707
+        Class<? extends PluralRule> value() default org.gwtproject.i18n.client.PluralRule.class;
+    }
+
+    /**
+     * Provides multiple plural forms based on a count. The selection of which
+     * plural form to use is based on the value of the argument marked
+     * PluralCount, which may also specify an alternate plural rule to use.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   &#64;DefaultMessage("You have {0} widgets.")
+     *   &#64;PluralText({"one", "You have one widget.")
+     *   String example(&#64;PluralCount int count)
+     * </pre></code>
+     * </p>
+     *
+     * @deprecated use {@link org.gwtproject.i18n.client.annotations.Messages.AlternateMessage} instead
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Documented
+    @Deprecated
+    @interface PluralText {
+
+        /**
+         * An array of pairs of strings containing the strings for different plural
+         * forms.
+         *
+         * Each pair is the name of the plural form (as returned by
+         * PluralForm.toString) followed by the string for that plural form. An
+         * example for a locale that has "none", "one", and "other" plural forms:
+         *
+         * <code><pre>
+         * &#64;DefaultMessage("{0} widgets")
+         * &#64;PluralText({"none", "No widgets", "one", "One widget"})
+         * </pre>
+         *
+         * "other" must not be included in this array as it will map to the
+         * DefaultMessage value.
+         */
+        String[] value();
+    }
+
+    /**
+     * Provides multiple forms based on a dynamic parameter.
+     *
+     * This annotation is applied to a single parameter of a Messages subinterface
+     * and indicates that parameter is to be used to choose the proper form of the
+     * message. The parameter chosen must be of type Enum, String, boolean, or a
+     * primitive integral type.  This is frequently used to get proper gender for
+     * translations to languages where surrounding words depend on the gender of
+     * a person or noun.  This also marks the parameter as {@link org.gwtproject.i18n.client.annotations.Messages.Optional}.
+     *
+     * <p>Example:
+     * <code><pre>
+     *   &#64;DefaultMessage("{0} likes their widgets.")
+     *   &#64;AlternateMessage({
+     *       "FEMALE", "{0} likes her widgets.",
+     *       "MALE", "{0} likes his widgets.",
+     *   })
+     *   String example(String name, &#64;Select Gender gender)
+     * </pre></code>
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface Select {
+    }
+
 }

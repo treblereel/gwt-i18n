@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.gwtproject.resources.rg.util;
+package org.gwtproject.i18n.rg.util;
 
-import org.gwtproject.resources.ext.Resource;
-import org.gwtproject.resources.ext.TreeLogger;
-import org.gwtproject.resources.ext.UnableToCompleteException;
+import org.gwtproject.i18n.ext.Resource;
+import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.resources.rg.util.tools.Utility;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;

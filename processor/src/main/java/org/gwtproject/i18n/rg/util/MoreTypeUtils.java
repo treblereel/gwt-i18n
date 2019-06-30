@@ -1,4 +1,4 @@
-package org.gwtproject.resources.rg.util;
+package org.gwtproject.i18n.rg.util;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.Visibility;

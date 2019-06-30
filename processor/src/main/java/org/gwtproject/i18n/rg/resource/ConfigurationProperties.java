@@ -20,18 +20,23 @@ import java.util.*;
 public final class ConfigurationProperties {
 
     public static final String KEY_CLIENT_BUNDLE_CACHE_LOCATION = "ClientBundle.cacheLocation";
+    public static final String KEY_LOCALE = "locale";
+    public static final String KEY_RUNTIME_LOCALES = "runtime.locales";
+    public static final String KEY_LOCALE_QUERYPARAM = "locale.queryparam";
+    public static final String KEY_LOCALE_COOKIE = "locale.cookie";
     public static final String KEY_CLIENT_BUNDLE_CACHE_URL = "ClientBundle.cacheUrl";
-    public static final String KEY_CLIENT_BUNDLE_ENABLE_INLINING = "ClientBundle.enableInlining";
-    public static final String KEY_CLIENT_BUNDLE_ENABLE_RENAMING = "ClientBundle.enableRenaming";
-    public static final String KEY_CSS_RESOURCE_ALLOWED_FUNCTIONS = "CssResource.allowedFunctions";
-    public static final String KEY_CSS_RESOURCE_ALLOWED_AT_RULES = "CssResource.allowedAtRules";
-    public static final String KEY_GSS_DEFAULT_IN_UIBINDER = "CssResource.gssDefaultInUiBinder";
-    public static final String KEY_CSS_RESOURCE_MERGE_ENABLED = "CssResource.mergeEnabled";
-    public static final String KEY_CSS_RESOURCE_ENABLE_GSS = "CssResource.enableGss";
-    public static final String KEY_CSS_RESOURCE_RESERVED_CLASS_PREFIXES = "CssResource.reservedClassPrefixes";
-    public static final String KEY_CSS_RESOURCE_OBFUSCATION_PREFIX = "CssResource.obfuscationPrefix";
-    public static final String KEY_CSS_RESOURCE_STYLE = "CssResource.style";
-    public static final String KEY_CSS_RESOURCE_CONVERSION_MODE = "CssResource.conversionMode";
+    /*    public static final String KEY_CLIENT_BUNDLE_ENABLE_INLINING = "ClientBundle.enableInlining";
+        public static final String KEY_CLIENT_BUNDLE_ENABLE_RENAMING = "ClientBundle.enableRenaming";
+        public static final String KEY_CSS_RESOURCE_ALLOWED_FUNCTIONS = "CssResource.allowedFunctions";
+        public static final String KEY_CSS_RESOURCE_ALLOWED_AT_RULES = "CssResource.allowedAtRules";
+        public static final String KEY_GSS_DEFAULT_IN_UIBINDER = "CssResource.gssDefaultInUiBinder";
+        public static final String KEY_CSS_RESOURCE_MERGE_ENABLED = "CssResource.mergeEnabled";
+        public static final String KEY_CSS_RESOURCE_ENABLE_GSS = "CssResource.enableGss";
+        public static final String KEY_CSS_RESOURCE_RESERVED_CLASS_PREFIXES = "CssResource.reservedClassPrefixes";
+        public static final String KEY_CSS_RESOURCE_OBFUSCATION_PREFIX = "CssResource.obfuscationPrefix";
+        public static final String KEY_CSS_RESOURCE_STYLE = "CssResource.style";
+        public static final String KEY_CSS_RESOURCE_CONVERSION_MODE = "CssResource.conversionMode";
+        */
     private static final String CLIENT_BUNDLE_DEFAULT_CACHE_LOCATION = "src/main/webapp/gwt-cache";
     private static final String CLIENT_BUNDLE_DEFAULT_CACHE_URL = "/gwt-cache/";
     private final Map<String, ConfigurationProperty> holder = new HashMap<>();
@@ -44,7 +49,14 @@ public final class ConfigurationProperties {
     }
 
     private void setDefaultProperties() {
-        lookupAndSet(KEY_CLIENT_BUNDLE_ENABLE_INLINING, Arrays.asList("true"), true);
+        lookupAndSet(KEY_RUNTIME_LOCALES, Arrays.asList("en"), true);
+        lookupAndSet(KEY_LOCALE, Arrays.asList("default"), true);
+        lookupAndSet(KEY_LOCALE_QUERYPARAM, Arrays.asList("locale"), true);
+        lookupAndSet(KEY_LOCALE_COOKIE, Arrays.asList(""), true);
+        lookupAndSet(KEY_CLIENT_BUNDLE_CACHE_URL, Arrays.asList(CLIENT_BUNDLE_DEFAULT_CACHE_URL), true);
+
+
+/*        lookupAndSet(KEY_CLIENT_BUNDLE_ENABLE_INLINING, Arrays.asList("true"), true);
         lookupAndSet(KEY_CLIENT_BUNDLE_ENABLE_RENAMING, Arrays.asList("true"), true);
         lookupAndSet(KEY_CSS_RESOURCE_ALLOWED_FUNCTIONS, new ArrayList<>(), false);
         lookupAndSet(KEY_CSS_RESOURCE_ALLOWED_AT_RULES, Arrays.asList("-moz-document", "supports"), false);
@@ -57,7 +69,7 @@ public final class ConfigurationProperties {
         lookupAndSet(KEY_CSS_RESOURCE_RESERVED_CLASS_PREFIXES, Arrays.asList("gwt-"), false);
 
 
-        lookupAndSet(KEY_CLIENT_BUNDLE_CACHE_URL, Arrays.asList(CLIENT_BUNDLE_DEFAULT_CACHE_URL), true);
+        lookupAndSet(KEY_CLIENT_BUNDLE_CACHE_URL, Arrays.asList(CLIENT_BUNDLE_DEFAULT_CACHE_URL), true);*/
     }
 
     private void lookupAndSet(String propertyName, List<String> defaulValues, boolean override) {

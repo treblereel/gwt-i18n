@@ -15,6 +15,8 @@
  */
 package org.gwtproject.i18n.client.gen;
 
+import org.gwtproject.i18n.client.Messages;
+
 /**
  * Interface to represent the messages contained in resource bundle:
  * 'org/gwtproject/i18n/client/gen/TestMessagesQuoting.properties'.
@@ -27,7 +29,7 @@ public interface TestMessagesQuoting extends
    * 
    * @return translated "Embedded\r\ncr-nl."
    */
-  @DefaultMessage("Embedded\r\ncr-nl.")
+  @Messages.DefaultMessage("Embedded\r\ncr-nl.")
   @Key("embeddedCRNL")
   String embeddedCRNL();
 
@@ -36,7 +38,7 @@ public interface TestMessagesQuoting extends
    * 
    * @return translated "This line has an\nembedded newline"
    */
-  @DefaultMessage("This line has an\nembedded newline")
+  @Messages.DefaultMessage("This line has an\nembedded newline")
   @Key("embeddedNL")
   String embeddedNL();
 
@@ -45,7 +47,7 @@ public interface TestMessagesQuoting extends
    * 
    * @return translated "\"Don''t worry, be happy\" he said."
    */
-  @DefaultMessage("\"Don''t worry, be happy\" he said.")
+  @Messages.DefaultMessage("\"Don''t worry, be happy\" he said.")
   @Key("embeddedQuote")
   String embeddedQuote();
 }

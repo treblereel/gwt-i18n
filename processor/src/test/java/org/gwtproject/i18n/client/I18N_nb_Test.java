@@ -18,6 +18,8 @@ package org.gwtproject.i18n.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 
+import static org.gwtproject.i18n.client.Messages.*;
+
 /**
  * Tests the Norwegian Bokmal locale.
  */
@@ -26,6 +28,7 @@ public class I18N_nb_Test extends GWTTestCase {
   /**
    * Test deprecated locale aliases with Messages.
    */
+  @I18N
   public interface MyMessages extends Messages {
     @DefaultMessage("default")
     String nbLocale();

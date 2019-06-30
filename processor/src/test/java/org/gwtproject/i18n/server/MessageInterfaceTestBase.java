@@ -15,15 +15,17 @@
  */
 package org.gwtproject.i18n.server;
 
+import com.google.gwt.i18n.server.AbstractMessageInterface;
+import com.google.gwt.i18n.server.DefaultVisitor;
+import com.google.gwt.i18n.server.FormVisitorDriver;
+import com.google.gwt.i18n.server.MessageFormVisitor;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.LocalizableResource.DefaultLocale;
 import org.gwtproject.i18n.client.LocalizableResource.GenerateKeys;
+import org.gwtproject.i18n.rg.rebind.keygen.MD5KeyGenerator;
 import org.gwtproject.i18n.server.Message.AlternateFormMapping;
 import org.gwtproject.i18n.server.MessageFormatUtils.MessageStyle;
 import org.gwtproject.i18n.server.Type.ListType;
-import org.gwtproject.i18n.server.impl.ReflectionMessageInterface;
-import org.gwtproject.i18n.server.keygen.MD5KeyGenerator;
-import org.gwtproject.i18n.server.testing.Child;
 import org.gwtproject.i18n.shared.AlternateMessageSelector;
 import org.gwtproject.i18n.shared.AlternateMessageSelector.AlternateForm;
 import org.gwtproject.i18n.shared.GwtLocale;
@@ -41,8 +43,8 @@ import java.util.List;
  */
 public abstract class MessageInterfaceTestBase extends TestCase {
 
-  private class TestMessageInterfaceVisitor extends DefaultVisitor
-      implements MessageFormVisitor {
+/*  private class TestMessageInterfaceVisitor extends DefaultVisitor
+          implements MessageFormVisitor {
 
     private final FormVisitorDriver selectorTracker = new FormVisitorDriver();
 
@@ -882,5 +884,5 @@ public abstract class MessageInterfaceTestBase extends TestCase {
   protected void setUp() throws Exception {
     // TODO Auto-generated method stub
     super.setUp();
-  }
+  }*/
 }

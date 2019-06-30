@@ -15,6 +15,7 @@
  */
 package org.gwtproject.i18n.shared;
 
+import org.gwtproject.i18n.client.I18N;
 import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -58,6 +59,7 @@ public abstract class DateTimeFormatTestBase extends GWTTestCase {
   /**
    * Test date/time formats in messages.
    */
+  @I18N
   public interface MyMessages extends Messages {
     @DefaultMessage("It is {0,localdatetime,dMMMy}")
     String getCustomizedDate(Date date);

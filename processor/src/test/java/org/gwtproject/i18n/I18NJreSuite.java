@@ -15,13 +15,8 @@
  */
 package org.gwtproject.i18n;
 
-import org.gwtproject.i18n.rebind.ConstantsWithLookupImplCreatorTest;
-import org.gwtproject.i18n.rebind.LocaleUtilsTest;
-import org.gwtproject.i18n.rebind.LocalizableGeneratorTest;
-import org.gwtproject.i18n.rebind.LookupMethodCreatorTest;
 import org.gwtproject.i18n.server.GwtLocaleTest;
 import org.gwtproject.i18n.server.MessageFormatParserTest;
-import org.gwtproject.i18n.server.PropertyCatalogFactoryTest;
 import org.gwtproject.i18n.server.RegionInheritanceTest;
 import org.gwtproject.i18n.server.impl.ReflectionMessageInterfaceTest;
 import org.gwtproject.i18n.shared.AnyRtlDirectionEstimatorTest;
@@ -46,11 +41,11 @@ public class I18NJreSuite {
     suite.addTestSuite(BidiUtilsTest.class);
     suite.addTestSuite(FirstStrongDirectionEstimatorTest.class);
     suite.addTestSuite(GwtLocaleTest.class);
-    suite.addTestSuite(LocaleUtilsTest.class);
-    suite.addTestSuite(LocalizableGeneratorTest.class);
+    //suite.addTestSuite(LocaleUtilsTest.class);
+    //suite.addTestSuite(LocalizableGeneratorTest.class);
     suite.addTestSuite(MessageFormatParserTest.class);
-    suite.addTestSuite(org.gwtproject.i18n.rebind.MessageFormatParserTest.class);
-    suite.addTestSuite(PropertyCatalogFactoryTest.class);
+    //suite.addTestSuite(org.gwtproject.i18n.rg.rebind.MessageFormatParserTest.class);
+    //suite.addTestSuite(PropertyCatalogFactoryTest.class);
     suite.addTestSuite(ReflectionMessageInterfaceTest.class);
     suite.addTestSuite(RegionInheritanceTest.class);
     /*
@@ -61,8 +56,8 @@ public class I18NJreSuite {
      */
     // suite.addTestSuite(TypeOracleMessageTest.class);
     suite.addTestSuite(WordCountDirectionEstimatorTest.class);
-    suite.addTestSuite(LookupMethodCreatorTest.class);
-    suite.addTestSuite(ConstantsWithLookupImplCreatorTest.class);
+    //suite.addTestSuite(LookupMethodCreatorTest.class);
+    //suite.addTestSuite(ConstantsWithLookupImplCreatorTest.class);
     // $JUnit-END$
 
     return suite;

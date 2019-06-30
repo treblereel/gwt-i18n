@@ -15,10 +15,13 @@
  */
 package org.gwtproject.i18n.client.gen;
 
+import org.gwtproject.i18n.client.I18N;
+
 /**
  * Interface to represent the constants contained in resource bundle:
  * 'org/gwtproject/i18n/client/gen/Colors.properties'.
  */
+@I18N
 public interface Colors extends org.gwtproject.i18n.client.Constants {
 
   /**

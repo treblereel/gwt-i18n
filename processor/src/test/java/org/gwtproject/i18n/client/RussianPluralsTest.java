@@ -21,6 +21,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 /**
  * Tests Russian plurals, which is one of the most complicated.
  */
+@I18N
 public class RussianPluralsTest extends GWTTestCase {
 
   /**

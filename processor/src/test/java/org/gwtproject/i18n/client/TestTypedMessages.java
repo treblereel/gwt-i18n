@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtml;
 
 /**
  * Test messages that take particular types for parameters.
@@ -31,7 +31,7 @@ public interface TestTypedMessages extends Messages {
 
   @Key("testAllTypes")
   SafeHtml testAllTypesAsSafeHtml(int a, float f, long l, boolean bool, Object obj, char c,
-      byte b, short s);
+                                  byte b, short s);
 
   // testLotsOfInts = {0}, {1},{2},{3}
   String testLotsOfInts(int a, int b, int c, int d);

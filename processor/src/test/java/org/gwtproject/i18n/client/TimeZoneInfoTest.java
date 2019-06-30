@@ -31,7 +31,8 @@ public class TimeZoneInfoTest extends GWTTestCase {
 
   @Override
   protected void gwtSetUp() throws Exception {
-    TimeZoneConstants timeZoneConstants = GWT.create(TimeZoneConstants.class);
+    //TimeZoneConstants timeZoneConstants = GWT.create(TimeZoneConstants.class);
+    TimeZoneConstants timeZoneConstants = null;
     mawson = TimeZoneInfo.buildTimeZoneData(timeZoneConstants.antarcticaMawson());
     anchorage = TimeZoneInfo.buildTimeZoneData(timeZoneConstants.americaAnchorage());
     madrid = TimeZoneInfo.buildTimeZoneData(timeZoneConstants.europeMadrid());

@@ -25,6 +25,7 @@ import java.util.Map;
 /**
  * Test of Constants generation using annotations.
  */
+@I18N
 @DefaultLocale("en-US")
 @GenerateKeys("org.gwtproject.i18n.server.keygen.MethodNameKeyGenerator") // default
 @Generate(format = "org.gwtproject.i18n.server.PropertyCatalogFactory")

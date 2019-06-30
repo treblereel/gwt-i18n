@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.rg.util;
 
 import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.server.JavaSourceWriterBuilder;
 
 /**
  * A mechanism to write source files.

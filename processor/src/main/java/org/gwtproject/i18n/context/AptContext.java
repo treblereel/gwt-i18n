@@ -1,16 +1,14 @@
 package org.gwtproject.i18n.context;
 
-import org.gwtproject.i18n.client.*;
+import org.gwtproject.i18n.client.Constants;
+import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.ext.ResourceGenerator;
-import org.gwtproject.i18n.ext.ResourceGeneratorType;
-import org.gwtproject.i18n.rg.*;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -44,38 +42,11 @@ public class AptContext {
 
     private void initGenerators() {
         preBuildGenerators();
-        userDefinedGenerators();
     }
 
     private void preBuildGenerators() {
-        generators.put(elements.getTypeElement(ClientBundle.class.getCanonicalName()), BundleResourceGenerator.class);
-        generators.put(elements.getTypeElement(CssResource.class.getCanonicalName()), CssResourceGenerator.class);
-        generators.put(elements.getTypeElement(DataResource.class.getCanonicalName()), DataResourceGenerator.class);
-        generators.put(elements.getTypeElement(ExternalTextResource.class.getCanonicalName()), ExternalTextResourceGenerator.class);
-        generators.put(elements.getTypeElement(ImageResource.class.getCanonicalName()), ImageResourceGenerator.class);
-        generators.put(elements.getTypeElement(TextResource.class.getCanonicalName()), TextResourceGenerator.class);
-    }
-
-    private void userDefinedGenerators() {
-        roundEnvironment.getElementsAnnotatedWith(ResourceGeneratorType.class).forEach(e -> {
-            ResourceGeneratorType resourceGeneratorType = e.getAnnotation(ResourceGeneratorType.class);
-            String resourceGeneratorName = getResourceGeneratorType(resourceGeneratorType).toString();
-           try {
-                generators.put(e, (Class<? extends ResourceGenerator>) Class.forName(resourceGeneratorName));
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-                throw new Error(e1);
-            }
-        });
-    }
-
-    private TypeMirror getResourceGeneratorType(ResourceGeneratorType annotation) {
-        try {
-            annotation.value();
-        } catch (MirroredTypeException mte) {
-            return mte.getTypeMirror();
-        }
-        return null;
+        //generators.put(elements.getTypeElement(Messages.class.getCanonicalName()), BundleResourceGenerator.class);
+        //generators.put(elements.getTypeElement(Constants.class.getCanonicalName()), CssResourceGenerator.class);
     }
 
 }

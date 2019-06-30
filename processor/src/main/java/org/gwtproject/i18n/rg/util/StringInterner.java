@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.gwtproject.resources.rg.util;
+package org.gwtproject.i18n.rg.util;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;

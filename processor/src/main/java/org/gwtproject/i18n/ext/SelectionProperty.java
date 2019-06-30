@@ -28,4 +28,6 @@ public interface SelectionProperty {
      * @return a SortedSet of Strings containing the possible property values.
      */
     SortedSet<String> getPossibleValues();
+
+    String getFallbackValue();
 }

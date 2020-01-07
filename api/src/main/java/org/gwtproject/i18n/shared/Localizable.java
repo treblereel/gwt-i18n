@@ -15,6 +15,9 @@
  */
 package org.gwtproject.i18n.shared;
 
+import org.gwtproject.i18n.client.LocalizableResource;
+import org.gwtproject.i18n.client.LocalizableResource.Generate;
+
 /**
  * A tag interface that serves as the root of a family of types used in static
  * internationalization. Using <code>GWT.create(<i>class</i>)</code> to
@@ -101,5 +104,6 @@ package org.gwtproject.i18n.shared;
  * @see org.gwtproject.i18n.client.Messages
  * @see org.gwtproject.i18n.client.Dictionary
  */
+//@Generate(format = "org.gwtproject.i18n.server.PropertyCatalogFactory") TODO
 public interface Localizable {
 }

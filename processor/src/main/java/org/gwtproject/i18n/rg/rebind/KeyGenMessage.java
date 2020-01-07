@@ -21,11 +21,14 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
+import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.Messages;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
+import org.gwtproject.i18n.context.AptContext;
+import org.gwtproject.i18n.rg.util.MoreTypeUtils;
+import org.gwtproject.i18n.server.KeyGenerator;
 import org.gwtproject.i18n.server.Message;
 import org.gwtproject.i18n.server.MessageFormatUtils;
 import org.gwtproject.i18n.server.MessageInterface;
@@ -49,11 +52,14 @@ class KeyGenMessage implements Message {
 
   private ExecutableElement method;
 
+  private AptContext context;
+
   /**
    * @param method
    */
-  public KeyGenMessage(ExecutableElement method) {
+  public KeyGenMessage(AptContext context, ExecutableElement method) {
     this.method = method;
+    this.context = context;
   }
 
   public void accept(MessageVisitor v) throws MessageProcessingException {
@@ -78,8 +84,7 @@ class KeyGenMessage implements Message {
     if (annot != null) {
       return annot;
     }
-    throw new UnsupportedOperationException();
-    //return method.getEnclosingElement().findAnnotationInTypeHierarchy(annotClass);
+    return MoreTypeUtils.getAnnotation(context.types, MoreElements.asType(method.getEnclosingElement()), annotClass);
   }
 
   public String getDefaultMessage() {

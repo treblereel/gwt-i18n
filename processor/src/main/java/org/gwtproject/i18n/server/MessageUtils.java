@@ -15,11 +15,13 @@
  */
 package org.gwtproject.i18n.server;
 
+import javax.lang.model.element.TypeElement;
+
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.Messages;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
-import org.gwtproject.i18n.rg.rebind.keygen.MethodNameKeyGenerator;
+import org.gwtproject.i18n.context.AptContext;
+import org.gwtproject.i18n.server.keygen.MethodNameKeyGenerator;
 
 import static org.gwtproject.i18n.client.LocalizableResource.*;
 
@@ -109,7 +111,7 @@ public class MessageUtils {
   }
 
   @SuppressWarnings("deprecation")
-  public static KeyGenerator getKeyGenerator(GenerateKeys keyGenAnnot)
+  public static KeyGenerator getKeyGenerator(AptContext context, GenerateKeys keyGenAnnot)
           throws KeyGeneratorException {
     if (keyGenAnnot == null) {
       return new MethodNameKeyGenerator();
@@ -117,16 +119,22 @@ public class MessageUtils {
     String keyGenClassName = keyGenAnnot.value();
     Throwable caught = null;
     try {
+
+      TypeElement keyGenClassNameTypeElement = context.elements.getTypeElement(keyGenClassName);
+      TypeElement keyGenerator = context.elements.getTypeElement(KeyGenerator.class.getCanonicalName());
+
       Class<?> clazz = Class.forName(keyGenClassName);
+
       if (KeyGenerator.class.isAssignableFrom(clazz)) {
         Class<? extends KeyGenerator> kgClass = clazz.asSubclass(
                 KeyGenerator.class);
         return kgClass.newInstance();
       }
-      if (KeyGenerator.class.isAssignableFrom(
+
+      if (org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator.class.isAssignableFrom(
               clazz)) {
-        Class<? extends KeyGenerator> kgClass
-                = clazz.asSubclass(KeyGenerator.class);
+        Class<? extends org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator> kgClass
+                = clazz.asSubclass(org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator.class);
         return new KeyGeneratorAdapter(kgClass.newInstance());
       }
       throw new KeyGeneratorException(keyGenClassName

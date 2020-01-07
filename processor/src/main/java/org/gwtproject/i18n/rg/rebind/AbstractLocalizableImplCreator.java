@@ -30,6 +30,7 @@ import javax.lang.model.element.TypeElement;
 import com.google.auto.common.MoreElements;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.LocalizableResource.Key;
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.ext.BadPropertyValueException;
 import org.gwtproject.i18n.ext.GeneratorContext;
 import org.gwtproject.i18n.ext.NotFoundException;
@@ -37,9 +38,10 @@ import org.gwtproject.i18n.ext.SelectionProperty;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.rebind.format.MessageCatalogFormat;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
 import org.gwtproject.i18n.rg.util.SourceWriter;
+import org.gwtproject.i18n.server.KeyGenerator;
 import org.gwtproject.i18n.server.MessageCatalogFactory;
+import org.gwtproject.i18n.server.MessageInterface;
 import org.gwtproject.i18n.server.MessageProcessingException;
 import org.gwtproject.i18n.shared.GwtLocale;
 import org.gwtproject.i18n.shared.GwtLocaleFactory;
@@ -80,10 +82,9 @@ abstract class AbstractLocalizableImplCreator extends
                         public void close() throws IOException {
                             try {
                                 context.commitResource(logger, ostr);
-                                System.out.println("setVisibility Visibility.Private");
-
                             } catch (UnableToCompleteException e) {
                                 // error already logged, anything more to do?
+                                throw new NullPointerException(); //TODO
                             }
                         }
 
@@ -100,6 +101,7 @@ abstract class AbstractLocalizableImplCreator extends
                 }
             } catch (UnableToCompleteException e) {
                 // error already logged, anything more to do?
+                throw new NullPointerException(e.getMessage());
             }
             return null;
         }
@@ -139,7 +141,9 @@ abstract class AbstractLocalizableImplCreator extends
     }
 
     static String generateConstantOrMessageClass(TreeLogger logger,
-                                                 GeneratorContext context, GwtLocale locale, TypeElement targetClass)
+                                                 GeneratorContext context,
+                                                 GwtLocale locale,
+                                                 TypeElement targetClass)
             throws UnableToCompleteException {
 
         TypeElement constantsClass;
@@ -155,8 +159,8 @@ abstract class AbstractLocalizableImplCreator extends
 
         // Make sure the interface being rebound extends either Constants or
         // Messages.
-        boolean assignableToConstants = context.getAptContext().types.isAssignable(constantsClass.asType(), targetClass.asType());
-        boolean assignableToMessages = context.getAptContext().types.isAssignable(messagesClass.asType(), targetClass.asType());
+        boolean assignableToConstants = context.getAptContext().types.isAssignable(targetClass.asType(), constantsClass.asType());
+        boolean assignableToMessages = context.getAptContext().types.isAssignable(targetClass.asType(), messagesClass.asType());
         if (!assignableToConstants && !assignableToMessages) {
             // Let the implementation generator handle this interface.
             return null;
@@ -172,7 +176,7 @@ abstract class AbstractLocalizableImplCreator extends
             throw error(logger, name + " must be an interface");
         }
 
-        ResourceList resourceList = null;
+        ResourceList resourceList;
         try {
             resourceList = ResourceFactory.getBundle(logger, context, targetClass, locale,
                                                      assignableToConstants);
@@ -194,7 +198,12 @@ abstract class AbstractLocalizableImplCreator extends
         String localeSuffix = String.valueOf(ResourceFactory.LOCALE_SEPARATOR);
         localeSuffix += generatedLocale.getAsString();
         // Use _ rather than "." in class name, cannot use $
-        String resourceName = targetClass.getSimpleName().toString().replace('.', '_');
+        String simpleName = (targetClass.getEnclosingElement().getKind().isClass() ||
+                targetClass.getEnclosingElement().getKind().isInterface()) ?
+                targetClass.getEnclosingElement().getSimpleName().toString()+targetClass.getSimpleName().toString()
+                : targetClass.getSimpleName().toString();
+
+        String resourceName = simpleName.replace('.', '_');
         String className = resourceName + localeSuffix;
         PrintWriter pw = context.tryCreate(logger, packageName, className);
         if (pw != null) {
@@ -203,27 +212,27 @@ abstract class AbstractLocalizableImplCreator extends
             factory.addImplementedInterface(targetClass.getQualifiedName().toString());
             SourceWriter writer = factory.createSourceWriter(context, pw);
             // Now that we have all the information set up, process the class
-            if (context.getAptContext().types.isAssignable(constantsWithLookupClass.asType(), targetClass.asType())) {
-                ConstantsWithLookupImplCreator c = new ConstantsWithLookupImplCreator(
+            AbstractLocalizableImplCreator creator;
+            if (context.getAptContext().types.isAssignable(targetClass.asType(), constantsWithLookupClass.asType())) {
+                creator = new ConstantsWithLookupImplCreator(
                         logger, writer, targetClass, resourceList, context);
-                c.emitClass(logger, generatedLocale);
-            } else if (context.getAptContext().types.isAssignable(constantsClass.asType(), targetClass.asType())) {
-                ConstantsImplCreator c = new ConstantsImplCreator(logger, writer,
+
+            } else if (context.getAptContext().types.isAssignable(targetClass.asType(), constantsClass.asType())) {
+                creator = new ConstantsImplCreator(logger, context.getAptContext(), writer,
                                                                   targetClass, resourceList);
-                c.emitClass(logger, generatedLocale);
             } else {
-                MessagesImplCreator messages = new MessagesImplCreator(logger, context, writer, targetClass,
+                creator = new MessagesImplCreator(logger, context, writer, targetClass,
                                                                        resourceList);
-                messages.emitClass(logger, generatedLocale);
             }
-            context.commit(logger, pw);
+            creator.emitClass(logger, generatedLocale);
         }
         // Generate a translatable output file if requested.
-        Generate generate = getClassAnnotation(targetClass, Generate.class);
+        //TODO remove as def annotation
+        Generate generate = getClassAnnotation(context.getAptContext().types, targetClass, Generate.class);
         if (generate != null) {
             String path = generate.fileName();
             if (Generate.DEFAULT.equals(path)) {
-                path = MoreElements.getPackage(targetClass).getSimpleName().toString() + "."
+                path = MoreElements.getPackage(targetClass).toString() + "."
                         + targetClass.getSimpleName().toString().replace('.', '_');
             } else if (path.endsWith(File.pathSeparator)) {
                 path = path + targetClass.getSimpleName().toString().replace('.', '_');
@@ -306,10 +315,6 @@ abstract class AbstractLocalizableImplCreator extends
                     if (msgCatFactory != null) {
                         seenError |= generateToMsgCatFactory(logger, context, locale,
                                                              targetClass, seenError, resourceList, msgCatFactory, genPath);
-                    } else if (msgWriter != null) {
-                        seenError |= generateToLegacyMsgCatFormat(logger, context, locale,
-                                                                  targetClass, seenError, resourceList, className, msgWriter,
-                                                                  genPath);
                     }
                 }
             }
@@ -319,47 +324,6 @@ abstract class AbstractLocalizableImplCreator extends
             throw new UnableToCompleteException();
         }
         return packageName + "." + className;
-    }
-
-    /**
-     * Write translation source files to the old-style
-     * {@link MessageCatalogFormat}.
-     *
-     * @return true if an error occurred (already logged)
-     */
-    private static boolean generateToLegacyMsgCatFormat(TreeLogger logger,
-                                                        GeneratorContext context, GwtLocale locale, TypeElement targetClass,
-                                                        boolean seenError, ResourceList resourceList, String className,
-                                                        MessageCatalogFormat msgWriter, String genPath)
-            throws UnableToCompleteException {
-        genPath += msgWriter.getExtension();
-        OutputStream outStr = context.tryCreateResource(logger, genPath);
-        if (outStr != null) {
-            TreeLogger branch = logger.branch(TreeLogger.TRACE, "Generating "
-                                                      + genPath + " from " + className + " for locale " + locale,
-                                              null);
-            PrintWriter out = null;
-            try {
-                out = new PrintWriter(new BufferedWriter(
-                        new OutputStreamWriter(outStr, "UTF-8")), false);
-            } catch (UnsupportedEncodingException e) {
-                throw error(logger, "UTF-8 not supported", e);
-            }
-            try {
-                msgWriter.write(branch, locale.toString(), resourceList, out,
-                                targetClass);
-                out.flush();
-                context.commitResource(logger, outStr);
-
-                System.out.println("setVisibility Visibility.Private");
-
-            } catch (UnableToCompleteException e) {
-                // msgWriter should have already logged an error message.
-                // Keep going for now so we can find other errors.
-                seenError = true;
-            }
-        }
-        return seenError;
     }
 
     /**
@@ -379,10 +343,7 @@ abstract class AbstractLocalizableImplCreator extends
                                                    GeneratorContext context, GwtLocale locale, TypeElement targetClass, boolean seenError,
                                                    ResourceList resourceList, MessageCatalogFactory msgCatFactory,
                                                    String genPath) {
-
-        throw new UnsupportedOperationException();
-
-/*        // TODO(jat): maintain MessageCatalogWriter instances across
+        // TODO(jat): maintain MessageCatalogWriter instances across
         // generator runs so they can save state.  One problem is knowing
         // when the last generator has been run.
         Writer catWriter = null;
@@ -390,7 +351,7 @@ abstract class AbstractLocalizableImplCreator extends
             String catalogName = genPath + msgCatFactory.getExtension();
             Context ctx = new MessageCatalogContextImpl(
                     context, logger);
-            MessageInterface msgIntf = new TypeOracleMessageInterface(
+            MessageInterface msgIntf = new TypeOracleMessageInterface(context.getAptContext(),
                     LocaleUtils.getLocaleFactory(), targetClass, resourceList);
             catWriter = msgCatFactory.getWriter(ctx, catalogName);
             if (catWriter == null) {
@@ -414,7 +375,7 @@ abstract class AbstractLocalizableImplCreator extends
                 }
             }
         }
-        return seenError;*/
+        return seenError;
     }
 
     /**
@@ -426,6 +387,8 @@ abstract class AbstractLocalizableImplCreator extends
      * The Dictionary/value bindings used to determine message contents.
      */
     private ResourceList resourceList;
+
+    private AptContext context;
 
     /**
      * True if the class being generated uses Constants-style annotations/quoting.
@@ -439,13 +402,14 @@ abstract class AbstractLocalizableImplCreator extends
      * @param targetClass current target
      * @param resourceList backing resource
      */
-    public AbstractLocalizableImplCreator(TreeLogger logger, SourceWriter writer,
+    public AbstractLocalizableImplCreator(TreeLogger logger, AptContext context, SourceWriter writer,
                                           TypeElement targetClass, ResourceList resourceList, boolean isConstants) {
         super(writer, targetClass);
         this.resourceList = resourceList;
         this.isConstants = isConstants;
+        this.context = context;
         try {
-            keyGenerator = getKeyGenerator(targetClass);
+            keyGenerator = getKeyGenerator(context, targetClass);
         } catch (AnnotationsError e) {
             logger.log(TreeLogger.WARN, "Error getting key generator for "
                     + targetClass.getQualifiedName().toString(), e);
@@ -481,7 +445,7 @@ abstract class AbstractLocalizableImplCreator extends
         String key = getKey(logger, method);
         if (key == null) {
             logger.log(TreeLogger.ERROR, "Unable to get or compute key for method "
-                    + method.getSimpleName().toString(), null);
+                    + method.getSimpleName().toString() + " in " + method.getEnclosingElement(), null);
             throw new UnableToCompleteException();
         }
         methodCreator.createMethodFor(logger, method, key, resourceList, locale);
@@ -500,6 +464,6 @@ abstract class AbstractLocalizableImplCreator extends
         if (key != null) {
             return key.value();
         }
-        return AnnotationsResource.getKey(logger, keyGenerator, method, isConstants);
+        return AnnotationsResource.getKey(logger, context, keyGenerator, method, isConstants);
     }
 }

@@ -382,7 +382,7 @@ public abstract class AbstractClientBundleGenerator extends Generator {
              *name, but should not include any sub - bundles.
              */
             writeMapMethods(sw, taskList, hashMapStringResource, resourceMapField);
-            //sw.commit(logger);
+            //sw.commit(logger); //TODO
         }
 
         finish(logger, resourceContext, generators.keySet());

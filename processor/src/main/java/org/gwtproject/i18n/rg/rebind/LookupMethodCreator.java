@@ -20,8 +20,10 @@ import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.server.Type;
 import org.gwtproject.i18n.shared.GwtLocale;
 
 import static org.gwtproject.i18n.rg.rebind.AbstractResource.*;
@@ -31,7 +33,7 @@ import static org.gwtproject.i18n.rg.rebind.AbstractResource.*;
  */
 class LookupMethodCreator extends AbstractMethodCreator {
 
-  private final TypeElement returnType;
+  private final Type returnType;
 
   /**
    * Constructor for <code>LookupMethodCreator</code>.
@@ -39,7 +41,7 @@ class LookupMethodCreator extends AbstractMethodCreator {
    * @param classCreator parent class creator
    * @param returnType associated return type
    */
-  public LookupMethodCreator(ConstantsWithLookupImplCreator classCreator, TypeElement returnType) {
+  public LookupMethodCreator(ConstantsWithLookupImplCreator classCreator, Type returnType) {
     super(classCreator);
     this.returnType = returnType;
   }
@@ -55,15 +57,12 @@ class LookupMethodCreator extends AbstractMethodCreator {
    */
   protected String getReturnTypeName() {
     String type;
-/*    JPrimitiveType s = returnType.isPrimitive();
-    if (s != null) {
-      type = AbstractSourceCreator.getJavaObjectTypeFor(s);
+    if (returnType.isPrimitive()) {
+      type = AbstractSourceCreator.getJavaObjectTypeFor(returnType);
     } else {
-      type = returnType.getParameterizedQualifiedSourceName();
+      type = returnType.toString();
     }
-    return type;*/
-    throw new UnsupportedOperationException();
-
+    return type;
   }
 
   void createCacheLookupFor() {
@@ -130,7 +129,7 @@ class LookupMethodCreator extends AbstractMethodCreator {
     return ((ConstantsWithLookupImplCreator) currentCreator);
   }
 
-  TypeElement getReturnType() {
+  Type getReturnType() {
     return returnType;
   }
 

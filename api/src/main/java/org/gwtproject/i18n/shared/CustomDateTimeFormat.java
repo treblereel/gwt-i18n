@@ -28,7 +28,7 @@ public interface CustomDateTimeFormat {
    * <p>The order of pattern characters and any literals don't matter, just
    * which pattern characters are present and their counts.
    */
-  public @interface Pattern {
+  @interface Pattern {
 
     /**
      * The pattern skeleton for which to generate a localized pattern.  Note

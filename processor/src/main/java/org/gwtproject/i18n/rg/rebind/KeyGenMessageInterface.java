@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import javax.lang.model.element.TypeElement;
 
 import com.google.auto.common.MoreElements;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
+import org.gwtproject.i18n.server.KeyGenerator;
 import org.gwtproject.i18n.server.MessageInterface;
 import org.gwtproject.i18n.server.MessageInterfaceVisitor;
 import org.gwtproject.i18n.server.MessageProcessingException;
@@ -53,8 +53,6 @@ class KeyGenMessageInterface implements MessageInterface {
 
   public <A extends Annotation> A getAnnotation(Class<A> annotClass) {
     throw new UnsupportedOperationException();
-
-    //return type.findAnnotationInTypeHierarchy(annotClass);
   }
 
   public String getClassName() {
@@ -71,6 +69,5 @@ class KeyGenMessageInterface implements MessageInterface {
 
   public boolean isAnnotationPresent(Class<? extends Annotation> annotClass) {
     throw new UnsupportedOperationException();
-    //return type.findAnnotationInTypeHierarchy(annotClass) != null;
   }
 }

@@ -20,6 +20,7 @@ import com.google.auto.common.MoreTypes;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.util.SourceWriter;
+import org.gwtproject.i18n.server.Type;
 import org.gwtproject.i18n.shared.GwtLocale;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 
 import static org.gwtproject.i18n.rg.rebind.AbstractResource.*;
@@ -90,7 +92,7 @@ public abstract class AbstractGeneratorClassCreator extends
    * List of registered method factories associated with <code>Constant</code>
    * method implementations.
    */
-  protected Map<TypeElement, AbstractMethodCreator> methodFactories = new HashMap<>();
+  protected Map<String, AbstractMethodCreator> methodFactories = new HashMap<>();
 
   /**
    * The interface the generator is conforming to.
@@ -126,7 +128,7 @@ public abstract class AbstractGeneratorClassCreator extends
     emitMethods(logger, targetClass, locale);
     classEpilog();
     getWriter().outdent();
-    getWriter().println("}");
+    writer.commit(logger);
   }
 
   public TypeElement getTarget() {
@@ -161,9 +163,9 @@ public abstract class AbstractGeneratorClassCreator extends
    * @param returnType return type that this creator handles.
    * @param creator creator to register
    */
-  public void register(TypeElement returnType, AbstractMethodCreator creator) {
+  public void register(Type returnType, AbstractMethodCreator creator) {
     // TODO: Hacked to get the gwt-trunk for 1.5 building.
-    methodFactories.put(returnType, creator);
+    methodFactories.put(returnType.getSourceName(), creator);
   }
 
   /**
@@ -207,16 +209,16 @@ public abstract class AbstractGeneratorClassCreator extends
    * @throws UnableToCompleteException
    */
   protected AbstractMethodCreator getMethodCreator(TreeLogger logger,
-                                                                              ExecutableElement method) throws UnableToCompleteException {
-    TypeElement type = MoreTypes.asTypeElement(method.getReturnType());
-    
-    AbstractMethodCreator methodCreator = methodFactories.get(type);
+                                                   ExecutableElement method) throws UnableToCompleteException {
+    TypeMirror type = method.getReturnType();
+    String simpleName = type.toString();
+    AbstractMethodCreator methodCreator = methodFactories.get(simpleName);
     if (methodCreator == null) {
       String msg = "No current method creator exists for " + method
           + " only methods with return types of ";
-      Iterator<TypeElement> iter = this.methodFactories.keySet().iterator();
+      Iterator<String> iter = this.methodFactories.keySet().iterator();
       while (iter.hasNext()) {
-        msg += iter.next().getSimpleName().toString();
+        msg += iter.next();
         if (iter.hasNext()) {
           msg += ", ";
         }
@@ -257,21 +259,19 @@ public abstract class AbstractGeneratorClassCreator extends
     String name = method.getSimpleName().toString();
     String returnType = method.getReturnType().toString();
     getWriter().print("public " + returnType + " " + name + "(");
-      List<? extends VariableElement> params = method.getParameters();
+    List<? extends VariableElement> params = method.getParameters();
     for (int i = 0; i < params.size(); i++) {
       if (i != 0) {
         getWriter().print(",");
       }
       if (method.isVarArgs() && i == params.size() - 1) {
-
-          throw new UnsupportedOperationException();
-/*        JArrayType arrayType = params.get(i).getKind().equals(TypeKind.ARRAY);
+        ArrayType arrayType = MoreTypes.asArray(params.get(i).asType());
         getWriter().print(
-            arrayType.getComponentType().getParameterizedQualifiedSourceName()
-            + "... arg" + (i));*/
+            arrayType.getComponentType().toString()
+            + "... arg" + (i));
       } else {
         getWriter().print(
-            params.get(i) + " arg"
+            params.get(i).asType() + " arg"
                 + (i));
       }
     }

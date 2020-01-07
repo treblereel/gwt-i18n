@@ -37,6 +37,7 @@ import javax.tools.Diagnostic;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
+import com.google.common.annotations.VisibleForTesting;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.ConstantsWithLookup;
 import org.gwtproject.i18n.client.LocaleInfo;
@@ -56,7 +57,6 @@ import org.gwtproject.i18n.shared.GwtLocale;
  * Generator used to bind classes extending the <code>Localizable</code> and
  * <code>Constants</code> interfaces.
  */
-//@RunsLocal(requiresProperties = {"locale.queryparam", "locale", "runtime.locales", "locale.cookie"})
 public class LocalizableGenerator extends Generator {
 
     /**
@@ -122,9 +122,6 @@ public class LocalizableGenerator extends Generator {
   @Override
   public final String generate(TreeLogger logger, GeneratorContext context,
                                String typeName) throws UnableToCompleteException {
-
-      System.out.println("GEN " + typeName);
-
     // Get the current locale
     PropertyOracle propertyOracle = context.getPropertyOracle();
     LocaleUtils localeUtils = LocaleUtils.getInstance(logger, propertyOracle,
@@ -155,6 +152,7 @@ public class LocalizableGenerator extends Generator {
     // Link current locale and interface type to correct implementation class.
     String generatedClass = AbstractLocalizableImplCreator.generateConstantOrMessageClass(
         logger, context, locale, targetClass);
+
     if (generatedClass != null) {
       return generatedClass;
     }
@@ -162,14 +160,14 @@ public class LocalizableGenerator extends Generator {
     // Now that we know it is a regular Localizable class, handle runtime
     // locales
     Set<GwtLocale> runtimeLocales = localeUtils.getRuntimeLocales();
-    String returnedClass = linkageCreator.linkWithImplClass(logger, targetClass, locale);
+    String returnedClass = linkageCreator.linkWithImplClass(logger, context.getAptContext(), targetClass, locale);
     if (!runtimeLocales.isEmpty()) {
       Map<String, Set<GwtLocale>> localeMap = new TreeMap<>();
       Set<GwtLocale> localeSet = new TreeSet<>();
       localeSet.add(locale);
       localeMap.put(returnedClass, localeSet);
       for (GwtLocale rtLocale : runtimeLocales) {
-        String rtClass = linkageCreator.linkWithImplClass(logger, targetClass, rtLocale);
+        String rtClass = linkageCreator.linkWithImplClass(logger, context.getAptContext(), targetClass, rtLocale);
         localeSet = localeMap.get(rtClass);
         if (localeSet == null) {
           localeSet = new TreeSet<>();
@@ -201,7 +199,7 @@ public class LocalizableGenerator extends Generator {
    *     the map and set should be ordered)
    * @return fully qualified classname of the runtime selection implementation
    */
-  // @VisibleForTesting
+  @VisibleForTesting
   String generateRuntimeSelection(CodeGenContext ctx, TypeElement targetClass, String defaultClass,
                                   GwtLocale locale, Map<String, Set<GwtLocale>> localeMap) {
     String className = targetClass.getSimpleName().toString().replace('.', '_') + '_' + locale.getAsString()
@@ -227,7 +225,7 @@ public class LocalizableGenerator extends Generator {
    *     mapped to that implementation (for deterministic code generation, both
    *     the map and set should be ordered)
    */
-  // @VisibleForTesting
+  @VisibleForTesting
   void writeRuntimeSelection(JavaSourceWriterBuilder builder, TypeElement targetClass,
                              String defaultClass, GwtLocale locale, Map<String, Set<GwtLocale>> localeMap) {
     boolean isInterface = targetClass.getKind().isInterface();

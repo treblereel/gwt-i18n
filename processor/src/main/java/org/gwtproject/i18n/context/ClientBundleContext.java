@@ -28,7 +28,7 @@ public class ClientBundleContext {
      * A general purpose String to object class which backs the interfaces defined
      * in {@link ResourceContext}.
      */
-    private final Map<String, Object> cachedData = new HashMap<String, Object>();
+    private final Map<String, Object> cachedData = new HashMap<>();
 
     public Object getCachedData(String string) {
         return cachedData.get(string);

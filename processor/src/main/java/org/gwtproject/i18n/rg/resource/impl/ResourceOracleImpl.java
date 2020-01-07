@@ -1,17 +1,5 @@
 package org.gwtproject.i18n.rg.resource.impl;
 
-import com.google.auto.common.MoreElements;
-import com.google.auto.common.MoreTypes;
-import org.gwtproject.i18n.context.AptContext;
-import org.gwtproject.i18n.ext.ResourceGeneratorUtil;
-import org.gwtproject.i18n.ext.ResourceOracle;
-import org.gwtproject.i18n.ext.TreeLogger;
-import org.gwtproject.i18n.ext.UnableToCompleteException;
-
-import javax.lang.model.element.ExecutableElement;
-import javax.tools.FileObject;
-import javax.tools.JavaFileManager.Location;
-import javax.tools.StandardLocation;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -19,11 +7,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.lang.model.element.ExecutableElement;
+import javax.tools.FileObject;
+import javax.tools.JavaFileManager.Location;
+import javax.tools.StandardLocation;
+
+import com.google.auto.common.MoreElements;
+import org.gwtproject.i18n.context.AptContext;
+import org.gwtproject.i18n.ext.ResourceOracle;
+import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.ext.UnableToCompleteException;
+
 /**
  * @author Dmitrii Tikhomirov <chani@me.com>
  * Created by treblereel on 10/8/18.
  */
 public class ResourceOracleImpl implements ResourceOracle {
+
     private final AptContext aptContext;
 
     public ResourceOracleImpl(AptContext context) {
@@ -35,7 +35,6 @@ public class ResourceOracleImpl implements ResourceOracle {
      *
      * <p>This method assumes that the path is a full package path such as
      * <code>org/gwtproject/uibinder/example/view/SimpleFormView.ui.xml</code>
-     *
      * @return FileObject or null if file is not found.
      * @see #findResource(CharSequence, CharSequence)
      */
@@ -50,7 +49,6 @@ public class ResourceOracleImpl implements ResourceOracle {
                     .replace('/', '.');
             relativeName = relativeName.substring(index + 1);
         }
-
         return findResource(packageName, relativeName);
     }
 
@@ -159,7 +157,6 @@ public class ResourceOracleImpl implements ResourceOracle {
      * <li>{@link StandardLocation#CLASS_PATH}</li>
      * <li>{@link StandardLocation#CLASS_OUTPUT}</li>
      * </ul>
-     *
      * @return FileObject or null if file is not found.
      */
     @Override
@@ -168,13 +165,13 @@ public class ResourceOracleImpl implements ResourceOracle {
                 Arrays.asList(
                         StandardLocation.SOURCE_PATH,
                         StandardLocation.CLASS_PATH,
-                        StandardLocation.CLASS_OUTPUT
+                        StandardLocation.CLASS_OUTPUT,
+                        StandardLocation.ANNOTATION_PROCESSOR_PATH
                 ), pkg, relativeName);
     }
 
     /**
      * Locates a resource by searching multiple locations.
-     *
      * @return FileObject or null if file is not found in given locations.
      */
     private URL findResource(List<Location> searchLocations, CharSequence pkg,
@@ -191,24 +188,24 @@ public class ResourceOracleImpl implements ResourceOracle {
                     fileObject = aptContext.filer.getResource(location, "", relativeName);
                     if (new File(fileObject.getName()).exists()) {
                         return fileObject.toUri().toURL();
-                    } else {
-                        return readFileFromClasspath(pkg.toString(), relativeName.toString());
                     }
                 }
             } catch (IOException ignored) {
                 // ignored
             }
         }
+
         // unable to locate, return null.
-        return null;
+        return readFileFromClasspath(pkg.toString(), relativeName.toString());
     }
 
     public URL readFileFromClasspath(String pkg, String fileName) {
-        if(!pkg.isEmpty()) {
-            pkg = pkg.replaceAll("\\.","/")+"/";
+        if (!pkg.isEmpty()) {
+            pkg = pkg.replaceAll("\\.", "/") + "/";
         }
+
         URL fileUrl = getClass().getClassLoader().getResource(pkg + fileName);
-        if(fileUrl != null) {
+        if (fileUrl != null) {
             return fileUrl;
         } else {
             return null;

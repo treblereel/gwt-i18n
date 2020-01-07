@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.server.AbstractMessage;
 import org.gwtproject.i18n.server.AbstractParameter;
 import org.gwtproject.i18n.server.Message;
@@ -95,9 +96,10 @@ public class ReflectionMessage extends AbstractMessage {
   // TODO(jat): some way of fetching messages from property files/etc
   // not needed for writing translatable messages to output file, but needed
   // for eventual goal of using this API for the generator itself.
-  public ReflectionMessage(GwtLocaleFactory localeFactory,
+  public ReflectionMessage(AptContext context,
+                           GwtLocaleFactory localeFactory,
                            ReflectionMessageInterface msgIntf, Method method) {
-    super(localeFactory, msgIntf);
+    super(context, localeFactory, msgIntf);
     this.method = method;
     init();
   }
@@ -246,6 +248,6 @@ public class ReflectionMessage extends AbstractMessage {
         }
       }
     }
-    return new Type(type.toString());
+    return new Type(type.toString(), false);
   }
 }

@@ -15,20 +15,18 @@
  */
 package org.gwtproject.i18n.server;
 
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
-
 /**
  * Adapter to use an old-style KeyGenerator from the new API.
  */
 @SuppressWarnings("deprecation")
 public class KeyGeneratorAdapter implements KeyGenerator {
 
-  private final KeyGenerator keygen;
+  private final org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator keygen;
 
   /**
    * @param keygen
    */
-  public KeyGeneratorAdapter(KeyGenerator keygen) {
+  public KeyGeneratorAdapter(org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator keygen) {
     this.keygen = keygen;
   }
 
@@ -38,11 +36,6 @@ public class KeyGeneratorAdapter implements KeyGenerator {
     String text = msg.getDefaultMessage();
     String meaning = msg.getMeaning();
     return keygen.generateKey(className, methodName, text, meaning);
-  }
-
-  @Override
-  public String generateKey(String className, String methodName, String text, String meaning) {
-    throw new UnsupportedOperationException();
   }
 
   @Override

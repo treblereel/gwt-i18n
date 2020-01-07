@@ -17,6 +17,9 @@ package org.gwtproject.i18n.server;
 
 import java.lang.annotation.Annotation;
 
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
+
 import org.gwtproject.i18n.client.Localizable;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.PluralRule;
@@ -124,10 +127,10 @@ public abstract class AbstractParameter implements Parameter {
   private AlternateMessageSelector computeAlternateMessageSelector() {
     PluralCount pluralAnnot = getAnnotation(PluralCount.class);
     if (pluralAnnot != null) {
-      Class<? extends PluralRule> pluralClass = pluralAnnot.value();
+      Class<? extends PluralRule> pluralClass = getPluralRule(pluralAnnot);
       // TODO(jat): this seems redundant with other processing
       DefaultLocale defLocaleAnnot = getAnnotation(
-          DefaultLocale.class);
+              DefaultLocale.class);
       String defaultLocale = null;
       if (defLocaleAnnot != null) {
         defaultLocale = defLocaleAnnot.value();
@@ -135,7 +138,7 @@ public abstract class AbstractParameter implements Parameter {
         defaultLocale = DefaultLocale.DEFAULT_LOCALE;
       }
       PluralRule pluralRule = getLocalizedPluralRule(pluralClass,
-          localeFactory.fromString(defaultLocale));
+                                                     localeFactory.fromString(defaultLocale));
       return new PluralRuleAdapter(pluralRule);
     }
     Select selectAnnot = getAnnotation(Select.class);
@@ -157,4 +160,19 @@ public abstract class AbstractParameter implements Parameter {
     }
     return null;
   }
+
+  private Class<? extends PluralRule> getPluralRule(PluralCount annotation) {
+    try {
+      annotation.value();
+    } catch (MirroredTypeException mte) {
+      TypeMirror mirror = mte.getTypeMirror();
+      try {
+        return (Class<? extends PluralRule>) Class.forName(mirror.toString());
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
 }

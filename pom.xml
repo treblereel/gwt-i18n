@@ -74,6 +74,7 @@
     <modules>
         <module>api</module>
         <module>processor</module>
+        <module>gwt2-tests</module>
     </modules>
 
     <dependencyManagement>

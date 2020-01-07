@@ -46,7 +46,9 @@ public class StandardGeneratorContext implements GeneratorContext {
         Generated gcup = uncommittedGeneratedCupsByPrintWriter.get(pw);
         if (gcup == null) {
             logger.log(TreeLogger.WARN, "Generator attempted to commit an unknown PrintWriter", null);
-            return;
+            //return;
+
+            throw new UnsupportedOperationException();
         }
         gcup.commit(logger);
         uncommittedGeneratedCupsByPrintWriter.remove(pw);
@@ -55,28 +57,7 @@ public class StandardGeneratorContext implements GeneratorContext {
 
     @Override
     public void commitResource(TreeLogger logger, OutputStream os) throws UnableToCompleteException {
-        PendingResource pendingResource = null;
-        String partialPath = null;
-        if (os instanceof PendingResource) {
-            pendingResource = (PendingResource) os;
-            partialPath = pendingResource.getPartialPath();
-            // Make sure it's ours by looking it up in the map.
-            if (pendingResource != pendingResources.get(partialPath)) {
-                pendingResource = null;
-            }
-        }
-        if (pendingResource == null) {
-            logger.log(TreeLogger.WARN, "Generator attempted to commit an unknown OutputStream", null);
-            throw new UnableToCompleteException();
-        }
 
-        String gwtCacheDir = propertyOracle.getConfigurationProperty(logger, KEY_CLIENT_BUNDLE_CACHE_LOCATION).asSingleValue();
-        try (OutputStream outputStream = new FileOutputStream(new File(gwtCacheDir, pendingResource.partialPath))) {
-            pendingResource.baos.writeTo(outputStream);
-        } catch (IOException e) {
-            logger.log(TreeLogger.ERROR, "Unable to write a file " + e.getMessage(), null);
-            throw new UnableToCompleteException();
-        }
     }
 
     @Override
@@ -111,7 +92,7 @@ public class StandardGeneratorContext implements GeneratorContext {
         // it is pending so another attempt to create the same type will fail.
         Generated gcup;
         StringWriter sw = new StringWriter();
-        PrintWriter pw;
+        PrintWriter pw = null;
         try {
             JavaFileObject builderFile = aptContext.filer.createSourceFile(packageName + "." + simpleTypeName);
             pw = new PrintWriter(builderFile.openWriter(), true) {
@@ -127,8 +108,11 @@ public class StandardGeneratorContext implements GeneratorContext {
             };
 
         } catch (IOException e) {
-            logger.log(TreeLogger.Type.ERROR, "Unable to create a Class : " + e.getMessage());
-            throw new UnableToCompleteException();
+            //TODO a hack
+            if(!e.getMessage().contains("Attempt to recreate a file for type")) {
+                logger.log(TreeLogger.Type.ERROR, "Unable to create a Class : " + e.getMessage());
+                throw new UnableToCompleteException();
+            }
         }
 
         gcup = new GeneratedUnitImpl(sw, typeName);

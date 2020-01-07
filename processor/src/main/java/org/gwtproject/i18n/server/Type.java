@@ -17,6 +17,7 @@ package org.gwtproject.i18n.server;
 
 import java.sql.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import org.gwtproject.safehtml.shared.SafeHtml;
 
@@ -24,7 +25,6 @@ import org.gwtproject.safehtml.shared.SafeHtml;
  * A return type or parameter type in a Messages/Constants method.
  */
 public class Type {
-
   /**
    * An array type.
    */
@@ -33,7 +33,7 @@ public class Type {
     private final Type componentType;
 
     public ArrayType(String sourceName, Type componentType) {
-      super(sourceName);
+      super(sourceName, false);
       this.componentType = componentType;
     }
 
@@ -51,7 +51,7 @@ public class Type {
     private final String[] values;
 
     public EnumType(String sourceName, String[] values) {
-      super(sourceName);
+      super(sourceName, false);
       this.values = values;
     }
 
@@ -78,7 +78,7 @@ public class Type {
     private final Type componentType;
 
     public ListType(String sourceName, Type componentType) {
-      super(sourceName);
+      super(sourceName, false);
       this.componentType = componentType;
     }
 
@@ -89,39 +89,42 @@ public class Type {
   }
 
   // Singletons for most types, only array/list and generic user objects aren't
-  public static final Type BOOLEAN = new Type("boolean");
+  public static final Type BOOLEAN = new Type("boolean", true);
 
-  public static final Type BYTE = new Type("byte");
+  public static final Type BYTE = new Type("byte", true);
 
-  public static final Type CHAR = new Type("char");
+  public static final Type CHAR = new Type("char", true);
 
-  public static final Type DATE = new Type(Date.class.getCanonicalName());
+  public static final Type DATE = new Type(Date.class.getCanonicalName(), false);
 
-  public static final Type DOUBLE = new Type("double");
+  public static final Type DOUBLE = new Type("double", true);
 
-  public static final Type FLOAT = new Type("float");
+  public static final Type FLOAT = new Type("float", true);
 
-  public static final Type INT = new Type("int");
+  public static final Type INT = new Type("int", true);
 
-  public static final Type LONG = new Type("long");
+  public static final Type LONG = new Type("long", true);
 
-  public static final Type NUMBER = new Type("Number");
+  public static final Type NUMBER = new Type(Number.class.getCanonicalName(), false);
 
-  public static final Type OBJECT = new Type("Object");
+  public static final Type OBJECT = new Type(Object.class.getCanonicalName(), false);
 
-  public static final Type SHORT = new Type("short");
+  public static final Type SHORT = new Type("short", true);
 
-  public static final Type SAFEHTML = new Type(SafeHtml.class.getCanonicalName());
+  public static final Type SAFEHTML = new Type(SafeHtml.class.getCanonicalName(), false);
 
-  public static final Type STRING = new Type("String");
+  public static final Type STRING = new Type(String.class.getCanonicalName(), false);
 
   public static final Type STRING_MAP = new Type(Map.class.getCanonicalName()
-      + "<String, String>");
+      + "<" + String.class.getCanonicalName() + "," + String.class.getCanonicalName() + ">", false);
 
   private final String sourceName;
 
-  public Type(String sourceName) {
+  private final boolean isPrimitive;
+
+  public Type(String sourceName, boolean isPrimitive) {
     this.sourceName = sourceName;
+    this.isPrimitive = isPrimitive;
   }
 
   /**
@@ -152,7 +155,29 @@ public class Type {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Type)) {
+      return false;
+    }
+    Type type = (Type) o;
+    return isPrimitive() == type.isPrimitive() &&
+            getSourceName().equals(type.getSourceName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getSourceName(), isPrimitive());
+  }
+
+  @Override
   public String toString() {
     return sourceName;
+  }
+
+  public boolean isPrimitive() {
+    return isPrimitive;
   }
 }

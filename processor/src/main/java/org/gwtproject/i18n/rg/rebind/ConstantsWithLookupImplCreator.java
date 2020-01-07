@@ -24,15 +24,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
+import com.google.auto.common.MoreElements;
+import com.google.auto.common.MoreTypes;
 import com.google.common.collect.Lists;
 import org.gwtproject.i18n.ext.GeneratorContext;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.util.SourceWriter;
+import org.gwtproject.i18n.server.Type;
 import org.gwtproject.i18n.shared.GwtLocale;
 
 import static org.gwtproject.i18n.rg.rebind.AbstractResource.*;
@@ -85,19 +93,19 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
    * @throws UnableToCompleteException
    */
   ConstantsWithLookupImplCreator(TreeLogger logger, SourceWriter writer,
-                                 TypeElement localizableClass, ResourceList resourceList, GeneratorContext context, int partitionsSize) throws UnableToCompleteException {
-    super(logger, writer, localizableClass, resourceList);
+                                 TypeElement localizableClass,
+                                 ResourceList resourceList,
+                                 GeneratorContext context,
+                                 int partitionsSize) throws UnableToCompleteException {
+    super(logger, context.getAptContext(), writer, localizableClass, resourceList);
     this.partitionsSize = partitionsSize;
     this.context = context;
-
-    throw new UnsupportedOperationException();
-
-/*    try {
+    Types types = context.getAptContext().types;
+    Elements elements = context.getAptContext().elements;
 
       // Boolean
-      TypeElement booleanType = oracle.parse(boolean.class.getName());
       LookupMethodCreator booleanMethod = new LookupMethodCreator(this,
-          booleanType) {
+                                                                  Type.BOOLEAN) {
         @Override
         public void printReturnTarget() {
           println("return target.booleanValue();");
@@ -113,9 +121,8 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       namesToMethodCreators.put("getBoolean", booleanMethod);
 
       // Double
-      TypeElement doubleType = oracle.parse(double.class.getName());
       LookupMethodCreator doubleMethod = new LookupMethodCreator(this,
-          doubleType) {
+                                                                 Type.DOUBLE) {
         @Override
         public void printReturnTarget() {
           println("return target.doubleValue();");
@@ -131,8 +138,7 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       namesToMethodCreators.put("getDouble", doubleMethod);
 
       // Int
-      TypeElement intType = oracle.parse(int.class.getName());
-      LookupMethodCreator intMethod = new LookupMethodCreator(this, intType) {
+      LookupMethodCreator intMethod = new LookupMethodCreator(this, Type.INT) {
         @Override
         public void printReturnTarget() {
           println("return target.intValue();");
@@ -149,8 +155,7 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       namesToMethodCreators.put("getInt", intMethod);
 
       // Float
-      TypeElement floatType = oracle.parse(float.class.getName());
-      LookupMethodCreator floatMethod = new LookupMethodCreator(this, floatType) {
+      LookupMethodCreator floatMethod = new LookupMethodCreator(this, Type.FLOAT) {
         @Override
         public String returnTemplate() {
           String val = "float answer = {0}();\n"
@@ -167,9 +172,8 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       namesToMethodCreators.put("getFloat", floatMethod);
 
       // Map - use erased type for matching
-      TypeElement mapType = oracle.parse(Map.class.getName()).getErasedType();
       namesToMethodCreators.put("getMap",
-          new LookupMethodCreator(this, mapType) {
+          new LookupMethodCreator(this, Type.STRING_MAP) {
             @Override
             public String getReturnTypeName() {
               return ConstantsMapMethodCreator.GENERIC_STRING_MAP_TYPE;
@@ -177,9 +181,8 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
           });
 
       // String
-      TypeElement stringType = oracle.parse(String.class.getName());
       LookupMethodCreator stringMethod = new LookupMethodCreator(this,
-          stringType) {
+                                                                 Type.STRING) {
         @Override
         public String returnTemplate() {
           return "String answer = {0}();\n"
@@ -189,16 +192,12 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       };
       namesToMethodCreators.put("getString", stringMethod);
 
-      // String Array
-      TypeElement stringArray = oracle.getArrayType(stringType);
       namesToMethodCreators.put("getStringArray", new LookupMethodCreator(this,
-          stringArray));
+          new Type.ArrayType(String[].class.getCanonicalName(),Type.STRING)));
 
       setNeedCache(true);
       allInterfaceMethods = getAllInterfaceMethods(localizableClass);
-    } catch (TypeOracleException e) {
-      throw error(logger, e);
-    }*/
+
   }
 
   @Override
@@ -244,7 +243,7 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
       methodsToCreate = methodPartitions.get(0);
       methodToCreatePartitionLookups = methodPartitions.subList(1, methodPartitions.size());
     } else {
-      methodsToCreate = methodPartitions.isEmpty() ? Collections.<ExecutableElement> emptyList()
+      methodsToCreate = methodPartitions.isEmpty() ? Collections.emptyList()
           : methodPartitions.get(0);
       methodToCreatePartitionLookups = Collections.emptyList();
     }
@@ -259,12 +258,12 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
         targetMethod.getSimpleName().toString(), partitionIndex});
   }
 
-  List<ExecutableElement> findAllMethodsToCreate(ExecutableElement targetMethod, TypeElement methodReturnType) {
+  List<ExecutableElement> findAllMethodsToCreate(ExecutableElement targetMethod, Type methodReturnType) {
     ExecutableElement[] allMethods = allInterfaceMethods;
-    TypeElement erasedType = methodReturnType;
+    //TypeMirror erasedType = methodReturnType;
     List<ExecutableElement> methodsToCreate = new ArrayList<>();
     for (ExecutableElement methodToCheck : allMethods) {
-      if (methodToCheck.getReturnType().equals(erasedType)
+      if (methodToCheck.getReturnType().toString().equals(methodReturnType.getSourceName())
           && methodToCheck != targetMethod) {
         methodsToCreate.add(methodToCheck);
       }
@@ -272,8 +271,15 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
     return methodsToCreate;
   }
 
+  private boolean compareMethods(ExecutableElement method1, ExecutableElement method2) {
+    if(method1.getSimpleName().equals(method2.getSimpleName())) {
+      return true;
+    }
+    return false;
+  }
+
   List<List<ExecutableElement>> findMethodsToCreateWithPartitionSize(ExecutableElement targetMethod,
-      TypeElement methodReturnType) {
+      Type methodReturnType) {
     List<ExecutableElement> allMethodsToCreate = findAllMethodsToCreate(targetMethod, methodReturnType);
     return Lists.partition(allMethodsToCreate, partitionsSize);
   }

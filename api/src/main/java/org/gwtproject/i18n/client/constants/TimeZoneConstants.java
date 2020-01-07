@@ -17,6 +17,7 @@
 package org.gwtproject.i18n.client.constants;
 
 import org.gwtproject.i18n.client.Constants;
+import org.gwtproject.i18n.client.I18N;
 
 /**
  * TimeZoneConstants encapsulates a collection of time zone data for use with
@@ -29,6 +30,7 @@ import org.gwtproject.i18n.client.Constants;
  * retrieve the necessary data (i.e. over RPC) for the user's locale at run
  * time.
  */
+@I18N
 public interface TimeZoneConstants extends Constants {
   String africaAbidjan();
 

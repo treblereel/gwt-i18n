@@ -18,6 +18,7 @@ package org.gwtproject.i18n.rg.rebind;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,6 +27,11 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
@@ -33,11 +39,15 @@ import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.PluralRule;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.Messages;
+import org.gwtproject.i18n.context.AptContext;
+import org.gwtproject.i18n.ext.GeneratorContext;
 import org.gwtproject.i18n.ext.TreeLogger;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
+import org.gwtproject.i18n.rg.util.MoreTypeUtils;
+import org.gwtproject.i18n.server.KeyGenerator;
 import org.gwtproject.i18n.server.Message;
 import org.gwtproject.i18n.server.MessageInterface;
 import org.gwtproject.i18n.server.MessageUtils;
+import org.gwtproject.i18n.server.Type;
 import org.gwtproject.i18n.shared.GwtLocale;
 
 import static org.gwtproject.i18n.client.LocalizableResource.*;
@@ -168,7 +178,7 @@ public class AnnotationsResource extends AbstractResource {
    * @return null if unable to get or compute the key for this method, otherwise
    *         the key is returned
    */
-  public static String getKey(TreeLogger logger, KeyGenerator keyGenerator,
+  public static String getKey(TreeLogger logger, AptContext context, KeyGenerator keyGenerator,
                               ExecutableElement method, boolean isConstants) {
     Key key = method.getAnnotation(Key.class);
     if (key != null) {
@@ -186,7 +196,7 @@ public class AnnotationsResource extends AbstractResource {
     }
     MessageInterface msgIntf = new KeyGenMessageInterface(
             MoreElements.asType(method.getEnclosingElement()));
-    Message msg = new KeyGenMessage(method);
+    Message msg = new KeyGenMessage(context, method);
     String keyStr = keyGenerator.generateKey(msg);
     if (keyStr == null) {
       if (text == null) {
@@ -213,11 +223,11 @@ public class AnnotationsResource extends AbstractResource {
    * @return KeyGenerator instance, guaranteed to not be null
    * @throws AnnotationsError if a specified KeyGenerator cannot be created
    */
-  public static KeyGenerator getKeyGenerator(TypeElement targetClass)
+  public static KeyGenerator getKeyGenerator(AptContext context, TypeElement targetClass)
       throws AnnotationsError {
-    GenerateKeys generator = getClassAnnotation(targetClass, GenerateKeys.class);
+    GenerateKeys generator = getClassAnnotation(context.types, targetClass, GenerateKeys.class);
     try {
-      return MessageUtils.getKeyGenerator(generator);
+      return MessageUtils.getKeyGenerator(context, generator);
     } catch (MessageUtils.KeyGeneratorException e) {
       throw new AnnotationsError(e.getMessage());
     }
@@ -236,10 +246,11 @@ public class AnnotationsResource extends AbstractResource {
   private static String getTextString(ExecutableElement method,
       Map<String, MethodEntry> map, boolean isConstants)
       throws AnnotationsError {
-      throw new UnsupportedOperationException();
+    System.out.println("getTextString m " + method);
+    System.out.println("getTextString " + method.getEnclosingElement());
 
+    TypeMirror returnType = method.getReturnType();
 
-/*    TypeElement returnType = MoreTypes.asTypeElement(method.getReturnType());
     DefaultMessage defaultText = method.getAnnotation(DefaultMessage.class);
     DefaultStringValue stringValue = method.getAnnotation(DefaultStringValue.class);
     DefaultStringArrayValue stringArrayValue = method.getAnnotation(DefaultStringArrayValue.class);
@@ -248,19 +259,19 @@ public class AnnotationsResource extends AbstractResource {
     DefaultFloatValue floatValue = method.getAnnotation(DefaultFloatValue.class);
     DefaultDoubleValue doubleValue = method.getAnnotation(DefaultDoubleValue.class);
     DefaultBooleanValue booleanValue = method.getAnnotation(DefaultBooleanValue.class);
+
     int constantsCount = 0;
     if (stringValue != null) {
       constantsCount++;
-      if (!returnType.getQualifiedSourceName().equals("java.lang.String")) {
+      if (!returnType.toString().equals("java.lang.String")) {
         throw new AnnotationsError(
             "@DefaultStringValue can only be used with a method returning String");
       }
     }
     if (stringArrayValue != null) {
       constantsCount++;
-      JArrayType arrayType = returnType.isArray();
-      if (arrayType == null
-          || !arrayType.getComponentType().getQualifiedSourceName().equals(
+      if (!returnType.getKind().equals(TypeKind.ARRAY)
+          || !MoreTypes.asArray(returnType).getComponentType().toString().equals(
               "java.lang.String")) {
         throw new AnnotationsError(
             "@DefaultStringArrayValue can only be used with a method returning String[]");
@@ -268,23 +279,9 @@ public class AnnotationsResource extends AbstractResource {
     }
     if (stringMapValue != null) {
       constantsCount++;
-      JRawType rawType = returnType.getErasedType().isRawType();
-      boolean error = false;
-      if (rawType == null
-          || !rawType.getQualifiedSourceName().equals("java.util.Map")) {
-        error = true;
-      } else {
-        JParameterizedType paramType = returnType.isParameterized();
-        if (paramType != null) {
-          JType[] args = paramType.getTypeArgs();
-          if (args.length != 2
-              || !args[0].getQualifiedSourceName().equals("java.lang.String")
-              || !args[1].getQualifiedSourceName().equals("java.lang.String")) {
-            error = true;
-          }
-        }
-      }
-      if (error) {
+      DeclaredType rawType = (DeclaredType)returnType;
+      if(!rawType.toString().equals("java.util.Map") &&
+              !rawType.toString().equals("java.util.Map<java.lang.String,java.lang.String>")) {
         throw new AnnotationsError(
             "@DefaultStringMapValue can only be used with a method "
                 + "returning Map or Map<String,String>");
@@ -292,32 +289,28 @@ public class AnnotationsResource extends AbstractResource {
     }
     if (intValue != null) {
       constantsCount++;
-      JPrimitiveType primType = returnType.isPrimitive();
-      if (primType != JPrimitiveType.INT) {
+      if (!returnType.getKind().equals(TypeKind.INT)) {
         throw new AnnotationsError(
             "@DefaultIntValue can only be used with a method returning int");
       }
     }
     if (floatValue != null) {
       constantsCount++;
-      JPrimitiveType primType = returnType.isPrimitive();
-      if (primType != JPrimitiveType.FLOAT) {
+      if (!returnType.getKind().equals(TypeKind.FLOAT)) {
         throw new AnnotationsError(
             "@DefaultFloatValue can only be used with a method returning float");
       }
     }
     if (doubleValue != null) {
       constantsCount++;
-      JPrimitiveType primType = returnType.isPrimitive();
-      if (primType != JPrimitiveType.DOUBLE) {
+      if (!returnType.getKind().equals(TypeKind.DOUBLE)) {
         throw new AnnotationsError(
             "@DefaultDoubleValue can only be used with a method returning double");
       }
     }
     if (booleanValue != null) {
       constantsCount++;
-      JPrimitiveType primType = returnType.isPrimitive();
-      if (primType != JPrimitiveType.BOOLEAN) {
+      if (!returnType.getKind().equals(TypeKind.BOOLEAN)) {
         throw new AnnotationsError(
             "@DefaultBooleanValue can only be used with a method returning boolean");
       }
@@ -327,6 +320,7 @@ public class AnnotationsResource extends AbstractResource {
         throw new AnnotationsError(
             "@Default*Value is not permitted on a Messages interface; see @DefaultMessage");
       }
+
       if (defaultText != null) {
         return defaultText.value();
       }
@@ -394,7 +388,7 @@ public class AnnotationsResource extends AbstractResource {
         return buf.toString();
       }
     }
-    return null;*/
+    return null;
   }
 
   private Map<String, MethodEntry> map;
@@ -409,14 +403,13 @@ public class AnnotationsResource extends AbstractResource {
    * @throws AnnotationsError if there is a fatal error while processing
    *           annotations
    */
-  public AnnotationsResource(TreeLogger logger, TypeElement clazz,
+  public AnnotationsResource(TreeLogger logger, AptContext context, TypeElement clazz,
                              GwtLocale locale, boolean isConstants) throws AnnotationsError {
     super(locale);
-    KeyGenerator keyGenerator = getKeyGenerator(clazz);
+    KeyGenerator keyGenerator = getKeyGenerator(context, clazz);
     map = new HashMap<>();
     setPath(clazz.getQualifiedName().toString());
     String defLocaleValue = null;
-
     // If the class has an embedded locale in it, use that for the default
     String className = clazz.getSimpleName().toString();
     int underscore = className.indexOf('_');
@@ -425,7 +418,7 @@ public class AnnotationsResource extends AbstractResource {
     }
 
     // If there is an annotation declaring the default locale, use that
-    DefaultLocale defLocaleAnnot = getClassAnnotation(clazz,
+    DefaultLocale defLocaleAnnot = getClassAnnotation(context.types, clazz,
         DefaultLocale.class);
     if (defLocaleAnnot != null) {
       defLocaleValue = defLocaleAnnot.value();
@@ -438,8 +431,6 @@ public class AnnotationsResource extends AbstractResource {
       return;
     }
     matchLocale = defLocale;
-
-
     for (Element element : clazz.getEnclosedElements()) {
       if(element.getKind().equals(ElementKind.METHOD)) {
           ExecutableElement method = MoreElements.asExecutable(element);
@@ -458,7 +449,7 @@ public class AnnotationsResource extends AbstractResource {
           if (keyAnnot != null) {
             key = keyAnnot.value();
           } else {
-            Message msg = new KeyGenMessage(method);
+            Message msg = new KeyGenMessage(context, method);
             key = keyGenerator.generateKey(msg);
             if (key == null) {
               throw new AnnotationsError("Could not compute key for "
@@ -579,4 +570,5 @@ public class AnnotationsResource extends AbstractResource {
   public String toString() {
     return "Annotations from class " + getPath() + " @" + getMatchLocale();
   }
+
 }

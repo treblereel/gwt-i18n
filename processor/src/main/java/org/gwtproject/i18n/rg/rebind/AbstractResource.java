@@ -547,7 +547,7 @@ public abstract class AbstractResource {
    */
   public Set<String> keySet() {
     if (keySet == null) {
-      keySet = new HashSet<String>();
+      keySet = new HashSet<>();
       addToKeySet(keySet);
     }
     return keySet;

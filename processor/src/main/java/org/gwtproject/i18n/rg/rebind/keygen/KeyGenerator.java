@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.rg.rebind.keygen;
 
 import org.gwtproject.i18n.server.Message;
+import org.gwtproject.i18n.server.MessageInterface;
 
 /**
  * Interface for key generation algorithms used by <code>LocalizableResource</code>
@@ -36,10 +37,10 @@ public interface KeyGenerator {
      * {@link Message#getMethodName()}, {@link Message#getDefaultMessage()},
      * {@link Message#getDescription()}, {@link Message#getMeaning()}, and
      * {@link Message#getMessageStyle()} (and only
-     * {@link com.google.gwt.i18n.server.MessageInterface#getClassName()},
-     * {@link com.google.gwt.i18n.server.MessageInterface#getPackageName()}, and
-     * {@link com.google.gwt.i18n.server.MessageInterface#getQualifiedName()} on
-     * the {@link com.google.gwt.i18n.server.MessageInterface MessageInterface}
+     * {@link MessageInterface#getClassName()},
+     * {@link MessageInterface#getPackageName()}, and
+     * {@link MessageInterface#getQualifiedName()} on
+     * the {@link MessageInterface MessageInterface}
      * instance returned from {@link Message#getMessageInterface()}) may be relied
      * upon until the i18n generator is updated.
      *

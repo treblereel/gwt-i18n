@@ -603,7 +603,7 @@ public class GwtLocaleImpl implements GwtLocale {
     if (initialScript == null) {
       return aliases;
     }
-    List<GwtLocale> result = new ArrayList<GwtLocale>();
+    List<GwtLocale> result = new ArrayList<>();
     for (GwtLocale alias : aliases) {
       String aliasScript = alias.getScript();
       if (aliasScript == null || aliasScript.equals(initialScript)) {

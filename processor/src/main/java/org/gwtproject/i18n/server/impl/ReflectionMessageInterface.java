@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.gwtproject.i18n.client.LocalizableResource;
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.server.AbstractMessageInterface;
 import org.gwtproject.i18n.server.Message;
 import org.gwtproject.i18n.server.MessageInterface;
@@ -40,10 +41,14 @@ public class ReflectionMessageInterface extends AbstractMessageInterface {
   
   private Map<Method, String[]> paramNames = null;
 
-  public ReflectionMessageInterface(GwtLocaleFactory factory,
+  private AptContext context;
+
+  public ReflectionMessageInterface(AptContext context,
+                                    GwtLocaleFactory factory,
                                     Class<? extends LocalizableResource> msgIntf) {
     super(factory);
     this.msgIntf = msgIntf;
+    this.context = context;
   }
 
   @Override
@@ -65,9 +70,9 @@ public class ReflectionMessageInterface extends AbstractMessageInterface {
   @Override
   public Iterable<Message> getMessages() throws MessageProcessingException {
     final Method[] methods = msgIntf.getMethods();
-    List<Message> messages = new ArrayList<Message>();
+    List<Message> messages = new ArrayList<>();
     for (Method method : methods) {
-      messages.add(new ReflectionMessage(factory,
+      messages.add(new ReflectionMessage(context, factory,
                                          ReflectionMessageInterface.this, method));
     }
     Collections.sort(messages);

@@ -19,10 +19,12 @@ import java.util.Locale;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.Generator;
+import org.gwtproject.i18n.server.Type;
 
 /**
  * Super class for AbstractMethod and AbstractClass creators. The primary
@@ -81,13 +83,13 @@ public class AbstractSourceCreator {
    * @param type
    * @return the string representation
    */
-  protected static String getJavaObjectTypeFor(TypeElement type) {
-    if (type.asType().getKind() == TypeKind.INT ) {
+  protected static String getJavaObjectTypeFor(Type type) {
+    if (type == Type.INT ) {
       return "Integer";
-    } else if (type.asType().getKind() == TypeKind.CHAR) {
+    } else if (type == Type.CHAR) {
       return "Character";
     } else {
-      String s = type.getQualifiedName().toString();
+      String s = type.toString();
       return s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1);
     }
   }

@@ -43,7 +43,7 @@ public interface LocalizableResource extends Localizable {
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
-  public @interface DefaultLocale {
+  @interface DefaultLocale {
 
     String DEFAULT_LOCALE = "en";
 
@@ -56,7 +56,7 @@ public interface LocalizableResource extends Localizable {
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
-  public @interface Description {
+  @interface Description {
     String value();
   }
 
@@ -83,7 +83,7 @@ public interface LocalizableResource extends Localizable {
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
-  public @interface Generate {
+    @interface Generate {
 
     /**
      * Placeholder used to detect that no value was supplied for the fileName
@@ -153,7 +153,7 @@ public interface LocalizableResource extends Localizable {
    */
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
-  public @interface GenerateKeys {
+  @interface GenerateKeys {
     String value() default "org.gwtproject.i18n.server.keygen.MD5KeyGenerator";
   }
 

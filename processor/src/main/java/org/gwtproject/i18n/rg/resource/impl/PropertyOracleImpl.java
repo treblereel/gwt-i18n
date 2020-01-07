@@ -1,7 +1,12 @@
 package org.gwtproject.i18n.rg.resource.impl;
 
 import org.gwtproject.i18n.context.AptContext;
-import org.gwtproject.i18n.ext.*;
+import org.gwtproject.i18n.ext.BadPropertyValueException;
+import org.gwtproject.i18n.ext.ConfigurationProperty;
+import org.gwtproject.i18n.ext.PropertyOracle;
+import org.gwtproject.i18n.ext.SelectionProperty;
+import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.resource.ConfigurationProperties;
 import org.gwtproject.i18n.rg.resource.StandardSelectionProperty;
 
@@ -10,6 +15,7 @@ import org.gwtproject.i18n.rg.resource.StandardSelectionProperty;
  * Created by treblereel 12/5/18
  */
 public class PropertyOracleImpl implements PropertyOracle {
+
     public final ConfigurationProperties configurationProperties;
 
     public PropertyOracleImpl(AptContext aptContext) {
@@ -36,6 +42,14 @@ public class PropertyOracleImpl implements PropertyOracle {
                 return new StandardSelectionProperty(propertyName, value, configurationProperties.getConfigurationProperty(propertyName).asSingleValue());
             } catch (BadPropertyValueException e) {
                 throw new UnableToCompleteException(e);
+            }
+        } else {
+            try {
+                return new StandardSelectionProperty(propertyName,
+                                                     configurationProperties.getConfigurationProperty(propertyName).asSingleValue()
+                        , configurationProperties.getConfigurationProperty(propertyName).asSingleValue());
+            } catch (BadPropertyValueException e) {
+
             }
         }
         logger.log(TreeLogger.Type.ERROR, "Unable to get selection property : " + propertyName);

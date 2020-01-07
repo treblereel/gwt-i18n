@@ -18,10 +18,12 @@ package org.gwtproject.i18n.rg.rebind;
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
 import org.gwtproject.i18n.client.LocalizableResource;
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.ext.GeneratorContext;
 import org.gwtproject.i18n.ext.Resource;
 import org.gwtproject.i18n.ext.ResourceOracle;
 import org.gwtproject.i18n.ext.TreeLogger;
+import org.gwtproject.i18n.rg.util.MoreTypeUtils;
 import org.gwtproject.i18n.rg.util.StringKey;
 import org.gwtproject.i18n.shared.GwtLocale;
 import org.gwtproject.i18n.shared.GwtLocaleFactory;
@@ -37,8 +39,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 import static org.gwtproject.i18n.client.LocalizableResource.*;
 import static org.gwtproject.i18n.rg.rebind.AbstractResource.*;
@@ -79,14 +84,17 @@ public abstract class ResourceFactory {
 
   public static synchronized ResourceList getBundle(TreeLogger logger,
                                                     GeneratorContext context,
-                                                    TypeElement topClass, GwtLocale bundleLocale, boolean isConstants) {
+                                                    TypeElement topClass,
+                                                    GwtLocale bundleLocale,
+                                                    boolean isConstants) {
     List<GwtLocale> locales = bundleLocale.getCompleteSearchList();
     List<TypeElement> classes = new ArrayList<>();
     Set<TypeElement> seenClasses = new HashSet<>();
     Map<ClassLocale, AnnotationsResource> annotations = new HashMap<>();
     GwtLocaleFactory factory = LocaleUtils.getLocaleFactory();
     GwtLocale defaultLocale = factory.getDefault();
-    walkInheritanceTree(logger, topClass, factory, defaultLocale, classes,
+
+    walkInheritanceTree(logger, context.getAptContext(), topClass, factory, defaultLocale, classes,
         annotations, seenClasses, isConstants);
     // TODO(jat): handle explicit subinterface with other locales -- ie:
     // public interface Foo_es_MX extends Foo { ... }
@@ -121,8 +129,11 @@ public abstract class ResourceFactory {
   }
 
   public static String getResourceName(TypeElement targetClass) {
-    String name = targetClass.getSimpleName().toString();
-    if (targetClass.getEnclosingElement().getKind().isClass()) {
+    String name = targetClass.getQualifiedName().toString()
+            .replaceFirst(MoreElements.getPackage(targetClass).toString(),"")
+            .replaceFirst("\\.","");
+    if (targetClass.getEnclosingElement().getKind().isClass() ||
+            targetClass.getEnclosingElement().getKind().isInterface()) {
       name = name.replace('.', '$');
     }
     return name;
@@ -175,11 +186,11 @@ public abstract class ResourceFactory {
     return resourceFactoryCtx;
   }
 
-  private static void walkInheritanceTree(TreeLogger logger, TypeElement clazz,
-      GwtLocaleFactory factory, GwtLocale defaultLocale,
-      List<TypeElement> classes,
-      Map<ClassLocale, AnnotationsResource> annotations,
-      Set<TypeElement> seenClasses, boolean isConstants) {
+  private static void walkInheritanceTree(TreeLogger logger, AptContext context, TypeElement clazz,
+                                          GwtLocaleFactory factory, GwtLocale defaultLocale,
+                                          List<TypeElement> classes,
+                                          Map<ClassLocale, AnnotationsResource> annotations,
+                                          Set<TypeElement> seenClasses, boolean isConstants) {
     if (seenClasses.contains(clazz)) {
       return;
     }
@@ -187,7 +198,7 @@ public abstract class ResourceFactory {
     classes.add(clazz);
     AnnotationsResource resource;
     try {
-      resource = new AnnotationsResource(logger, clazz, defaultLocale,
+      resource = new AnnotationsResource(logger, context, clazz, defaultLocale,
           isConstants);
       if (resource.notEmpty()) {
         resource.setPath(clazz.getQualifiedName().toString());
@@ -201,9 +212,8 @@ public abstract class ResourceFactory {
         if (underscore >= 0) {
           defLocaleValue = className.substring(underscore + 1);
         }
-
         // If there is an annotation declaring the default locale, use that
-        DefaultLocale defLocaleAnnot = getClassAnnotation(clazz, DefaultLocale.class);
+        DefaultLocale defLocaleAnnot = getClassAnnotation(context.types, clazz, DefaultLocale.class);
         if (defLocaleAnnot != null) {
           defLocaleValue = defLocaleAnnot.value();
         }
@@ -217,13 +227,22 @@ public abstract class ResourceFactory {
     } catch (AnnotationsResource.AnnotationsError e) {
       logger.log(TreeLogger.ERROR, e.getMessage(), e);
     }
-    if (clazz.getSuperclass() != null) {
-      walkInheritanceTree(logger,  MoreTypes.asTypeElement(clazz.getSuperclass()), factory,
-          defaultLocale, classes, annotations, seenClasses, isConstants);
+
+    for (TypeMirror supertype : context.types.directSupertypes(clazz.asType())) {
+      DeclaredType declared = (DeclaredType)supertype; //you should of course check this is possible first
+      Element supertypeElement = declared.asElement();
     }
-    for (TypeMirror intf : clazz.getInterfaces()) {
-      walkInheritanceTree(logger, MoreTypes.asTypeElement(intf), factory, defaultLocale, classes,
-          annotations, seenClasses, isConstants);
+
+    if(clazz != null) {
+      if (MoreTypeUtils.getSuperType(context.types, clazz) != null) {
+        walkInheritanceTree(logger, context, MoreTypeUtils.getSuperType(context.types, clazz), factory,
+                            defaultLocale, classes, annotations, seenClasses, isConstants);
+      }
+
+      for (TypeMirror intf : clazz.getInterfaces()) {
+        walkInheritanceTree(logger, context, MoreTypes.asTypeElement(intf), factory, defaultLocale, classes,
+                            annotations, seenClasses, isConstants);
+      }
     }
   }
 

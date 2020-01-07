@@ -18,7 +18,7 @@ package org.gwtproject.i18n.server;
 import org.gwtproject.i18n.client.LocalizableResource;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.Messages;
-import org.gwtproject.i18n.rg.rebind.keygen.KeyGenerator;
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.shared.AlternateMessageSelector;
 import org.gwtproject.i18n.shared.GwtLocale;
 import org.gwtproject.i18n.shared.GwtLocaleFactory;
@@ -66,10 +66,14 @@ public abstract class AbstractMessage implements Message {
 
   private MessageTranslation overrideDefault;
 
-  public AbstractMessage(GwtLocaleFactory localeFactory,
-      MessageInterface msgIntf) {
+  private AptContext context;
+
+  public AbstractMessage(AptContext context,
+                         GwtLocaleFactory localeFactory,
+                         MessageInterface msgIntf) {
     this.localeFactory = localeFactory;
     this.msgIntf = msgIntf;
+    this.context = context;
   }
 
   public void accept(MessageVisitor mv) throws MessageProcessingException {
@@ -183,7 +187,7 @@ public abstract class AbstractMessage implements Message {
       } else {
         GenerateKeys keyGenAnnot = getAnnotation(GenerateKeys.class);
         try {
-          KeyGenerator keyGen = getKeyGenerator(keyGenAnnot);
+          KeyGenerator keyGen = getKeyGenerator(context, keyGenAnnot);
           key = keyGen.generateKey(this);
         } catch (KeyGeneratorException e) {
           keyGenException  = e;
@@ -387,8 +391,8 @@ public abstract class AbstractMessage implements Message {
     String[] keyValues = dsmv.value();
     StringBuilder buf = new StringBuilder();
     boolean needComma = false;
-    Map<String, String> map = new HashMap<String, String>();
-    List<String> sortedKeys = new ArrayList<String>();
+    Map<String, String> map = new HashMap<>();
+    List<String> sortedKeys = new ArrayList<>();
     for (int i = 0; i < keyValues.length; i += 2) {
       sortedKeys.add(keyValues[i]);
       map.put(keyValues[i], keyValues[i + 1]);

@@ -41,7 +41,9 @@ public class LocaleInfoImpl {
   static String getRuntimeLocale() {
     throw new UnsupportedOperationException();
 
-  } /*-{
+  }
+
+  /*-{
     return $wnd['__gwt_Locale'];
   }-*/;
 

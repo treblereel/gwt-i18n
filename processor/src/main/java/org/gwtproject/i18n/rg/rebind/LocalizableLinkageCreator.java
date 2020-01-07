@@ -17,11 +17,15 @@ package org.gwtproject.i18n.rg.rebind;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
+import org.gwtproject.i18n.client.impl.plurals.DefaultRule;
+import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.shared.GwtLocale;
@@ -33,19 +37,23 @@ import org.reflections.Reflections;
 class LocalizableLinkageCreator extends AbstractSourceCreator {
   
   static Map<String, TypeElement> findDerivedClasses(TreeLogger logger,
+                                                     AptContext context,
                                                      TypeElement baseClass) throws UnableToCompleteException {
     // Construct valid set of candidates for this type.
-    Map<String, TypeElement> matchingClasses = new HashMap<String, TypeElement>();
+    Map<String, TypeElement> matchingClasses = new HashMap<>();
     // Add base class if possible.
     if (!baseClass.getKind().isInterface() && !baseClass.getModifiers().contains(Modifier.ABSTRACT)) {
       matchingClasses.put(GwtLocale.DEFAULT_LOCALE, baseClass);
     }
     String baseName = baseClass.getSimpleName().toString();
-
-    throw new UnsupportedOperationException();
+    Reflections reflections = new Reflections("org.gwtproject.i18n.client.impl.plurals");
+    int lowestTime=100000;
+    Set<Class<? extends DefaultRule>> subTypes = reflections.getSubTypesOf(org.gwtproject.i18n.client.impl.plurals.DefaultRule.class);
+    TypeElement[] x = subTypes.stream().map(elm -> context.elements.getTypeElement(elm.getCanonicalName()))
+            .collect(Collectors.toList()).toArray(new TypeElement[subTypes.size()]);
 
     // Find matching sub types.
- /*   TypeElement[] x = baseClass.getSubtypes();
+    //TypeElement[] x = baseClass.getSubtypes();
     for (int i = 0; i < x.length; i++) {
       TypeElement subType = x[i];
       if (!subType.getKind().isInterface() && subType.getModifiers().contains(Modifier.ABSTRACT)) {
@@ -87,14 +95,13 @@ class LocalizableLinkageCreator extends AbstractSourceCreator {
         }
       }
     }
-    return matchingClasses;*/
+    return matchingClasses;
   }
 
   /**
    * Map to cache linkages of implementation classes and interfaces.
    */
-  // Change back to ReferenceMap once apache collections is in.
-  private final Map<String, String> implCache = new HashMap<String, String>();
+  private final Map<String, String> implCache = new HashMap<>();
 
   /**
    * * Finds associated implementation in the current locale. Here are the rules
@@ -108,7 +115,7 @@ class LocalizableLinkageCreator extends AbstractSourceCreator {
    * @return class name to link with
    * @throws UnableToCompleteException
    */
-  String linkWithImplClass(TreeLogger logger, TypeElement baseClass,
+  String linkWithImplClass(TreeLogger logger, AptContext context, TypeElement baseClass,
       GwtLocale locale) throws UnableToCompleteException {
     String baseName = baseClass.getQualifiedName().toString();
     /**
@@ -125,9 +132,10 @@ class LocalizableLinkageCreator extends AbstractSourceCreator {
           + " in the base localizable class " + baseClass);
     }
     Map<String, TypeElement> matchingClasses =
-      findDerivedClasses(logger, baseClass);
+      findDerivedClasses(logger, context, baseClass);
     // Now that we have all matches, find best class
-    TypeElement result = null;  
+    TypeElement result = null;
+
     for (GwtLocale search : locale.getCompleteSearchList()) {
       result = matchingClasses.get(search.toString());
       if (result != null) {

@@ -246,9 +246,6 @@ public class AnnotationsResource extends AbstractResource {
   private static String getTextString(ExecutableElement method,
       Map<String, MethodEntry> map, boolean isConstants)
       throws AnnotationsError {
-    System.out.println("getTextString m " + method);
-    System.out.println("getTextString " + method.getEnclosingElement());
-
     TypeMirror returnType = method.getReturnType();
 
     DefaultMessage defaultText = method.getAnnotation(DefaultMessage.class);

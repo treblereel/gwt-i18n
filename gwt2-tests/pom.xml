@@ -83,57 +83,8 @@
                         <configuration>
                             <properties>
                                 <property>
-                                    <name>CssResource.style</name>
-                                    <value>obf</value>
-                                </property>
-                                <property>
-                                    <name>CssResource.enableGss</name>
-                                    <value>true</value>
-                                </property>
-                                <property>
-                                    <!-- CssResourceTest empty -->
-                                    <name>CssResource.obfuscationPrefix</name>
-                                    <value>empty</value>
-                                </property>
-                                <property>
-                                    <name>CssResource.conversionMode</name>
-                                    <value>lenient</value>
-                                </property>
-                                <property>
-                                    <name>CssResource.allowedAtRules</name>
-                                    <value>extenal dontIgnoreThis dontIgnoreThisToo</value>
-                                </property>
-                                <property>
-                                    <name>CssResource.enableInlining</name>
-                                    <value>false</value>
-                                </property>
-                                <property>
-                                    <name>test.property</name>
-                                    <value>true</value>
-                                </property>
-                                <property>
-                                    <name>custom.one</name>
-                                    <value>bar</value>
-                                </property>
-                                <property>
-                                    <name>custom.two</name>
-                                    <value>bar</value>
-                                </property>
-                                <property>
-                                    <name>customProperty</name>
-                                    <value>true</value>
-                                </property>
-                                <property>
-                                    <name>customProperty2</name>
-                                    <value>foo</value>
-                                </property>
-                                <property>
-                                    <name>DISABLE_KENNEDY</name>
-                                    <value>false</value>
-                                </property>
-                                <property>
-                                    <name>TRUE_PROPERTY</name>
-                                    <value>true</value>
+                                    <name>locale</name>
+                                    <value>de,en,ru</value>
                                 </property>
                                 <property>
                                     <name>ClientBundle.cacheLocation</name>

@@ -107,7 +107,9 @@ public class LocaleUtils {
       logger.log(TreeLogger.WARN,
                  "Unable to get locale properties, using defaults", e);
       GwtLocale defaultLocale = factory.fromString("default");
-      Set<GwtLocale> allLocales = new HashSet<GwtLocale>();
+      Set<GwtLocale> allLocales = new HashSet<>();
+
+
       allLocales.add(defaultLocale);
       return new LocaleUtils(defaultLocale, allLocales, allLocales,
                              Collections.<GwtLocale>emptySet(), null, null);
@@ -127,9 +129,9 @@ public class LocaleUtils {
       ConfigurationProperty prop, ConfigurationProperty queryParamProp,
       ConfigurationProperty cookieProp) {
     GwtLocale compileLocale = null;
-    Set<GwtLocale> allLocales = new HashSet<GwtLocale>();
-    Set<GwtLocale> allCompileLocales = new HashSet<GwtLocale>();
-    Set<GwtLocale> runtimeLocales = new HashSet<GwtLocale>();
+    Set<GwtLocale> allLocales = new HashSet<>();
+    Set<GwtLocale> allCompileLocales = new HashSet<>();
+    Set<GwtLocale> runtimeLocales = new HashSet<>();
     String localeName = localeProp.getCurrentValue();
     String queryParam = queryParamProp.getValues().get(0);
     if (queryParam.length() == 0) {
@@ -220,6 +222,7 @@ public class LocaleUtils {
    *
    * @return unmodifiable set of all locales
    */
+
   public Set<GwtLocale> getAllLocales() {
     return allLocales;
   }
@@ -238,6 +241,10 @@ public class LocaleUtils {
    */
   public String getCookie() {
     return cookie;
+  }
+
+  public GwtLocale getDefaultLocale() {
+    return factory.fromString("default");
   }
 
   /**

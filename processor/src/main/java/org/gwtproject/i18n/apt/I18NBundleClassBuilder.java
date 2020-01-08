@@ -4,10 +4,13 @@ import java.util.Set;
 
 import javax.lang.model.element.TypeElement;
 
+import org.gwtproject.i18n.client.LocaleInfo;
+import org.gwtproject.i18n.client.impl.LocaleInfoImpl;
 import org.gwtproject.i18n.context.AptContext;
 import org.gwtproject.i18n.ext.StandardGeneratorContext;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
+import org.gwtproject.i18n.rg.rebind.LocaleInfoGenerator;
 import org.gwtproject.i18n.rg.rebind.LocalizableGenerator;
 
 /**
@@ -28,6 +31,9 @@ public class I18NBundleClassBuilder {
 
     public void process() throws UnableToCompleteException {
         StandardGeneratorContext standardGeneratorContext = new StandardGeneratorContext(context);
+        new LocaleInfoGenerator().generate(logger,
+                                           standardGeneratorContext,
+                                           LocaleInfoImpl.class.getCanonicalName());
         LocalizableGenerator gen = new LocalizableGenerator();
         for (TypeElement element : elements) {
             gen.generate(logger, standardGeneratorContext, element.getQualifiedName().toString());

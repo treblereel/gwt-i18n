@@ -16,7 +16,6 @@
 package org.gwtproject.i18n.rg.rebind;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +32,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
@@ -43,7 +41,6 @@ import org.gwtproject.i18n.client.ConstantsWithLookup;
 import org.gwtproject.i18n.client.LocaleInfo;
 import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.ext.GeneratorContext;
-import org.gwtproject.i18n.ext.NotFoundException;
 import org.gwtproject.i18n.ext.PropertyOracle;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
@@ -142,7 +139,7 @@ public class LocalizableGenerator extends Generator {
    *     null to use the base class
    * @throws UnableToCompleteException
    */
-  private String generate(TreeLogger logger, GeneratorContext context,
+  String generate(TreeLogger logger, GeneratorContext context,
       String typeName, LocaleUtils localeUtils, GwtLocale locale) throws UnableToCompleteException {
       TypeElement targetClass = context.getAptContext().elements.getTypeElement(typeName);
       if(targetClass == null) {

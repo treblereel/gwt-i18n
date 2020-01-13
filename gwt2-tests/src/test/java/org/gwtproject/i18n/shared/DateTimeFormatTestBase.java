@@ -15,17 +15,17 @@
  */
 package org.gwtproject.i18n.shared;
 
+import junit.framework.TestCase;
 import org.gwtproject.i18n.client.I18N;
 import org.gwtproject.i18n.client.Messages;
 import org.gwtproject.i18n.shared.DateTimeFormat.PredefinedFormat;
-import com.google.gwt.junit.client.GWTTestCase;
 
 import java.util.Date;
 
 /**
  * Base class for date/time format tests.
  */
-public abstract class DateTimeFormatTestBase extends GWTTestCase {
+public abstract class DateTimeFormatTestBase extends TestCase {
 
   /**
    * The timezone used by any tests which use a fixed timezone.
@@ -35,6 +35,7 @@ public abstract class DateTimeFormatTestBase extends GWTTestCase {
   /**
    * Class for getting customized date/time formats.
    */
+  @I18N
   public interface MyFormats extends CustomDateTimeFormat {
 
     /**

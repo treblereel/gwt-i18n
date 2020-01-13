@@ -15,6 +15,7 @@
  */
 package org.gwtproject.i18n.rg.util;
 
+import com.google.auto.common.MoreElements;
 import org.gwtproject.i18n.ext.Resource;
 import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
@@ -28,7 +29,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import java.io.BufferedWriter;
@@ -56,7 +60,8 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class Util {
 
@@ -946,4 +951,18 @@ public final class Util {
         return clazz.getKind().isClass() || clazz.getKind().isInterface();
     }
 
+    public static String getJavaClassName(TypeElement typeElement) {
+        String className = typeElement.getQualifiedName().toString();
+        PackageElement pkg = MoreElements.getPackage(typeElement);
+        return className.replace(pkg.getQualifiedName().toString(),"")
+                .replaceFirst("\\.","");
+    }
+
+    public static List<ExecutableElement> getMethods(TypeElement typeElement) {
+        return typeElement.getEnclosedElements()
+                .stream()
+                .filter(elm -> elm.getKind().equals(ElementKind.METHOD))
+                .map(elm -> MoreElements.asExecutable(elm))
+                .collect(Collectors.toList());
+    }
 }

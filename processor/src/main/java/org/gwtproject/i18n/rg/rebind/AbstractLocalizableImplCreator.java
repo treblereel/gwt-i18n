@@ -39,6 +39,7 @@ import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.rg.rebind.format.MessageCatalogFormat;
 import org.gwtproject.i18n.rg.util.SourceWriter;
+import org.gwtproject.i18n.rg.util.Util;
 import org.gwtproject.i18n.server.KeyGenerator;
 import org.gwtproject.i18n.server.MessageCatalogFactory;
 import org.gwtproject.i18n.server.MessageInterface;
@@ -145,14 +146,10 @@ abstract class AbstractLocalizableImplCreator extends
                                                  GwtLocale locale,
                                                  TypeElement targetClass)
             throws UnableToCompleteException {
-
-        TypeElement constantsClass;
-        TypeElement messagesClass;
-        TypeElement constantsWithLookupClass;
         boolean seenError = false;
-        constantsClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.CONSTANTS_NAME);
-        constantsWithLookupClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.CONSTANTS_WITH_LOOKUP_NAME);
-        messagesClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.MESSAGES_NAME);
+        TypeElement constantsClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.CONSTANTS_NAME);
+        TypeElement constantsWithLookupClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.CONSTANTS_WITH_LOOKUP_NAME);
+        TypeElement messagesClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.MESSAGES_NAME);
 
         String name = targetClass.getSimpleName().toString();
         String packageName = MoreElements.getPackage(targetClass).getQualifiedName().toString();
@@ -193,18 +190,12 @@ abstract class AbstractLocalizableImplCreator extends
 
         // generated implementations for interface X will be named X_, X_en,
         // X_en_CA, etc.
-        GwtLocale generatedLocale = resourceList.findLeastDerivedLocale(logger,
-                                                                        locale);
+        GwtLocale generatedLocale = locale;
         String localeSuffix = String.valueOf(ResourceFactory.LOCALE_SEPARATOR);
         localeSuffix += generatedLocale.getAsString();
         // Use _ rather than "." in class name, cannot use $
-        String simpleName = (targetClass.getEnclosingElement().getKind().isClass() ||
-                targetClass.getEnclosingElement().getKind().isInterface()) ?
-                targetClass.getEnclosingElement().getSimpleName().toString()+targetClass.getSimpleName().toString()
-                : targetClass.getSimpleName().toString();
-
-        String resourceName = simpleName.replace('.', '_');
-        String className = resourceName + localeSuffix;
+        String simpleName = Util.getJavaClassName(targetClass);
+        String className = simpleName.replaceAll("\\.", "") + localeSuffix;
         PrintWriter pw = context.tryCreate(logger, packageName, className);
         if (pw != null) {
             ClassSourceFileComposerFactory factory = new ClassSourceFileComposerFactory(

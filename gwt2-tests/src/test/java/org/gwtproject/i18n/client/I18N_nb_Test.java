@@ -15,19 +15,25 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.junit.client.GWTTestCase;
-
-import static org.gwtproject.i18n.client.Messages.*;
+import junit.framework.TestCase;
 
 /**
  * Tests the Norwegian Bokmal locale.
  */
-public class I18N_nb_Test extends GWTTestCase {
+public class I18N_nb_Test extends TestCase {
 
   /**
    * Test deprecated locale aliases with Messages.
    */
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "nb");
+  }
+
   @I18N
   public interface MyMessages extends Messages {
     @DefaultMessage("default")
@@ -40,16 +46,16 @@ public class I18N_nb_Test extends GWTTestCase {
     String noLocale();
   }
   
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_nb";
-  }
+  }*/
 
   /**
    * Test alias resolution.
    */
   public void testAliases() {
-    MyMessages msg = new I18N_nb_TestMyMessages_();
+    MyMessages msg = I18N_nb_TestMyMessagesFactory.get();
     assertEquals("nb", msg.nbLocale());
     assertEquals("no_BOKMAL", msg.noBokmalLocale());
     assertEquals("no", msg.noLocale());

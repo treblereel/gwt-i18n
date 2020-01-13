@@ -18,14 +18,12 @@ package org.gwtproject.i18n.client;
 import junit.framework.TestCase;
 import org.gwtproject.i18n.client.TestAnnotatedMessages.Nested;
 import org.gwtproject.i18n.client.gen.Colors;
+import org.gwtproject.i18n.client.gen.ColorsFactory;
 import org.gwtproject.i18n.client.gen.Colors_;
 import org.gwtproject.i18n.client.gen.Shapes;
 import org.gwtproject.i18n.client.gen.Shapes_;
 import org.gwtproject.i18n.client.gen.TestMessages;
 import org.gwtproject.i18n.client.gen.TestMessages_;
-import org.gwtproject.i18n.client.resolutiontest.ExtendsAnotherInnerExtendProtectedInner_;
-import org.gwtproject.i18n.client.resolutiontest.HasInnerIsInner_;
-import org.gwtproject.i18n.client.resolutiontest.InnerClassInnerInner_;
 import org.gwtproject.i18n.client.resolutiontest.Inners;
 import org.gwtproject.i18n.client.resolutiontest.Inners.ExtendsInnerInner;
 import org.gwtproject.i18n.client.resolutiontest.Inners.HasInner;
@@ -38,10 +36,12 @@ import org.gwtproject.i18n.client.resolutiontest.Inners.LocalizableSimpleInner;
 import org.gwtproject.i18n.client.resolutiontest.Inners.OuterLoc;
 import org.gwtproject.i18n.client.resolutiontest.Inners.SimpleInner;
 import com.google.gwt.junit.client.GWTTestCase;
-import org.gwtproject.i18n.client.resolutiontest.InnersExtendsInnerInner_;
-import org.gwtproject.i18n.client.resolutiontest.InnersHasInner_;
-import org.gwtproject.i18n.client.resolutiontest.InnersSimpleInner_;
-import org.gwtproject.i18n.client.resolutiontest.ProtectedInnerInnerClassInnerInnerInnerMessages_;
+import org.gwtproject.i18n.client.resolutiontest.InnersExtendsInnerInnerFactory;
+import org.gwtproject.i18n.client.resolutiontest.InnersHasInnerFactory;
+import org.gwtproject.i18n.client.resolutiontest.InnersHasInnerIsInnerFactory;
+import org.gwtproject.i18n.client.resolutiontest.InnersInnerClassInnerInnerFactory;
+import org.gwtproject.i18n.client.resolutiontest.InnersInnerClassProtectedInnerInnerClassInnerInnerInnerMessagesFactory;
+import org.gwtproject.i18n.client.resolutiontest.InnersSimpleInnerFactory;
 import org.gwtproject.safehtml.shared.SimpleHtmlSanitizer;
 
 import java.math.BigDecimal;
@@ -223,7 +223,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testAnnotationInheritance() {
-    TestAnnotationGrandchild m = new TestAnnotationGrandchild_();
+    TestAnnotationGrandchild m = TestAnnotationGrandchildFactory.get();
     assertEquals("foo", m.foo());
     assertEquals("bar_piglatin", m.bar());
     assertEquals("baz_piglatin", m.baz());
@@ -231,7 +231,7 @@ public class I18NTest extends TestCase {
 
   public void testAnnotationInheritanceAsSafeHtml() {
     // Duplicate of non-SafeHtml tests
-    TestAnnotationGrandchild m = new TestAnnotationGrandchild_();
+    TestAnnotationGrandchild m = TestAnnotationGrandchildFactory.get();
     assertEquals("foo", m.fooAsSafeHtml().asString());
     assertEquals("bar_piglatin", m.barAsSafeHtml().asString());
     assertEquals("baz_piglatin", m.bazAsSafeHtml().asString());
@@ -247,7 +247,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testColors() {
-    Colors colors = new Colors_();
+    Colors colors = ColorsFactory.get();
     assertNotNull(colors);
     // No piglatin version exists for grey
     assertEquals("ĝréý", colors.grey());
@@ -256,7 +256,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testColorsAndShapes() {
-    ColorsAndShapes s = new ColorsAndShapes_();
+    ColorsAndShapes s = ColorsAndShapesFactory.get();
     assertEquals("ueblay", s.blue());
     assertEquals("ĝréý", s.grey());
   }
@@ -268,7 +268,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testConstantDoubles() {
-    TestConstants types = new TestConstants_();
+    TestConstants types = TestConstantsFactory.get();
     double delta = 0.0000001;
     assertEquals(3.14159, types.doublePi(), delta);
     assertEquals(0.0, types.doubleZero(), delta);
@@ -281,7 +281,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testConstantFloats() {
-    TestConstants types = new TestConstants_();
+    TestConstants types = TestConstantsFactory.get();
     double delta = 0.0000001;
     assertEquals(3.14159f, types.floatPi(), delta);
     assertEquals(0.0f, types.floatZero(), delta);
@@ -297,7 +297,7 @@ public class I18NTest extends TestCase {
    * Exercises ConstantMap more than the other map tests.
    */
   public void testConstantMapABCD() {
-    TestConstants types = new TestConstants_();
+    TestConstants types = TestConstantsFactory.get();
 
     Map<String, String> map = types.mapABCD();
     Map<String, String> expectedMap = getMapFromArrayUsingASimpleRule(new String[] {
@@ -578,32 +578,32 @@ public class I18NTest extends TestCase {
     Inners inner = new Inners();
 
     // Simple Inner
-    SimpleInner simpleInner = new InnersSimpleInner_();
+    SimpleInner simpleInner = InnersSimpleInnerFactory.get();
     assertEquals(0, simpleInner.intZero());
     assertEquals("Simple Inner", simpleInner.simpleInner());
     assertTrue(inner.testProtectedInner());
 
     // Has Inner
-    HasInner hasInner = new InnersHasInner_();
+    HasInner hasInner = InnersHasInnerFactory.get();
     assertEquals("Has Inner", hasInner.hasInner());
     assertEquals(0, hasInner.floatZero(), .0001);
 
     // Is Inner
-    IsInner isInner = new HasInnerIsInner_();
+    IsInner isInner = InnersHasInnerIsInnerFactory.get();
     assertEquals(2, isInner.isInner());
 
     // Inner Inner
-    InnerInner innerInner = new InnerClassInnerInner_();
+    InnerInner innerInner = InnersInnerClassInnerInnerFactory.get();
     assertEquals(4.321, innerInner.innerInner(), .0001);
     assertEquals("outer", innerInner.outer());
 
     // Inner Inner Message
-    InnerInnerMessages innerInnerMessages = new ProtectedInnerInnerClassInnerInnerInnerMessages_();
+    InnerInnerMessages innerInnerMessages = InnersInnerClassProtectedInnerInnerClassInnerInnerInnerMessagesFactory.get();
     assertEquals("I am a person",
         innerInnerMessages.innerClassMessages("person"));
 
     // Extends Inner Inner
-    ExtendsInnerInner extendsInnerInner = new InnersExtendsInnerInner_();
+    ExtendsInnerInner extendsInnerInner = InnersExtendsInnerInnerFactory.get();
     assertEquals("Extends Inner Inner", extendsInnerInner.extendsInnerInner());
 
     // Protected InnerClass
@@ -618,7 +618,7 @@ public class I18NTest extends TestCase {
   }
 
   public void testNestedAnnotations() {
-    Nested m = new TestAnnotatedMessagesNested_();
+    Nested m = TestAnnotatedMessagesNestedFactory.get();
     // no translation exists in piglatin for nested dollar
     assertEquals("nested dollar", m.nestedDollar());
     assertEquals("estednay underscoray", m.nestedUnderscore());
@@ -626,7 +626,7 @@ public class I18NTest extends TestCase {
 
   public void testNestedAnnotationsAsSafeHtml() {
     // Duplicate of non-SafeHtml tests
-    TestAnnotatedMessages.Nested m = new TestAnnotatedMessagesNested_();
+    TestAnnotatedMessages.Nested m = TestAnnotatedMessagesNestedFactory.get();
     // no translation exists in piglatin for nested dollar
     assertEquals("nested dollar", m.nestedDollarAsSafeHtml().asString());
     assertEquals("estednay underscoray", m.nestedUnderscoreAsSafeHtml().asString());
@@ -636,7 +636,7 @@ public class I18NTest extends TestCase {
    * Test that messages works with Number subclasses.
    */
   public void testNumber() {
-    TestAnnotatedMessages m = new TestAnnotatedMessages_en();
+    TestAnnotatedMessages m = TestAnnotatedMessagesFactory.get();
     BigInteger intVal = new BigInteger("1000000000000000000");
     assertEquals("Total is US$1,000,000,000,000,000,000.00",
         m.withNumberCurrency(intVal));
@@ -660,14 +660,14 @@ public class I18NTest extends TestCase {
   }*/
 
   public void testSpecialPlurals() {
-    TestAnnotatedMessages m = new TestAnnotatedMessages_en();
+    TestAnnotatedMessages m = TestAnnotatedMessagesFactory.get();
     assertEquals("No widgets", m.specialPlurals(0));
     assertEquals("A widget", m.specialPlurals(1));
     assertEquals("2 widgets", m.specialPlurals(2));
   }
 
   public void testTestMessages() {
-    TestMessages s = new TestMessages_();
+    TestMessages s = org.gwtproject.i18n.client.gen.TestMessagesFactory.get();
     assertEquals("no args", s.args0());
     assertEquals("a,b,c,d,e,f,g,h,i,j", s.args10("a", "b", "c", "d", "e", "f",
         "g", "h", "i", "j"));

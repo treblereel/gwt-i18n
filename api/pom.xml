@@ -42,6 +42,11 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.gwtproject.i18n</groupId>
+      <artifactId>gwt-cldr</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.gwtproject.event</groupId>
       <artifactId>gwt-event-dom</artifactId>
       <version>1.0-SNAPSHOT</version>
@@ -68,6 +73,16 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/LocaleInfoImplFactory.class</exclude>
+            <exclude>**/LocaleInfoImplFactory.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>

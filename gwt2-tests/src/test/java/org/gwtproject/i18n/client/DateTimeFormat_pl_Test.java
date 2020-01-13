@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -24,11 +25,20 @@ import java.util.Date;
  * language.
  */
 @SuppressWarnings("deprecation")
-public class DateTimeFormat_pl_Test extends GWTTestCase {
+public class DateTimeFormat_pl_Test extends TestCase {
 
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_pl";
+  }*/
+
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "pl");
   }
 
   public void test_LL() {

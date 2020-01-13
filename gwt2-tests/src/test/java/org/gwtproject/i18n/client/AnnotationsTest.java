@@ -15,14 +15,19 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
+import junit.framework.TestCase;
 import org.gwtproject.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
  * Tests annotations not covered elsewhere.
  */
-public class AnnotationsTest extends GWTTestCase {
+public class AnnotationsTest extends TestCase {
+
+/*  @Override
+  public String getModuleName() {
+     return "org.gwtproject.i18n.I18NTest_en";
+  }*/
   
   /**
    * First grandparent for test.
@@ -128,17 +133,12 @@ public class AnnotationsTest extends GWTTestCase {
   public interface AllMessages extends Msg1, Msg2 {
   }
 
-  @Override
-  public String getModuleName() {
-    return "org.gwtproject.i18n.I18NTest_en";
-  }
-
   public void testInheritance() {
-    Inherit1 i1 = new AnnotationsTestInherit1_();
+    Inherit1 i1 = AnnotationsTestInherit1Factory.get();
     assertEquals("p1 annot", i1.p1());
     assertEquals("gp2 annot", i1.gp2());
     assertEquals("p1 shared annot", i1.shared());
-    Inherit2 i2 = new AnnotationsTestInherit2_();
+    Inherit2 i2 = AnnotationsTestInherit2Factory.get();
     assertEquals("p1 annot", i2.p1());
     assertEquals("gp2 annot", i2.gp2());
     assertEquals("gp1 shared annot", i2.shared());
@@ -150,14 +150,14 @@ public class AnnotationsTest extends GWTTestCase {
   }
 
   public void testIssue2359() {
-    AllMessages m = new AnnotationsTestAllMessages_();
+    AllMessages m = AnnotationsTestAllMessagesFactory.get();
     assertEquals("Test foo", m.getTest("foo"));
     assertEquals("You have 2 widgets.", m.getWidgetCount(2));
     assertEquals("You have a widget.", m.getWidgetCount(1));
   }
   
   public void testLeastDerived() {
-    AllMessages m = new AnnotationsTestAllMessages_();
+    AllMessages m = AnnotationsTestAllMessagesFactory.get();
     assertEquals("from en_US", m.leastDerived());
   }
 }

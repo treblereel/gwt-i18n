@@ -26,6 +26,7 @@ import org.gwtproject.i18n.ext.TreeLogger;
 import org.gwtproject.i18n.ext.UnableToCompleteException;
 import org.gwtproject.i18n.shared.GwtLocale;
 import org.gwtproject.i18n.shared.GwtLocaleFactory;
+import org.junit.Ignore;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import java.util.TreeSet;
 /**
  * Test for {@link LocaleUtils}.
  */
+@Ignore
 public class LocaleUtilsTest extends TestCase {
 
   /**

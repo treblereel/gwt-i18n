@@ -23,7 +23,7 @@ package org.gwtproject.i18n.shared;
  */
 public class GwtBidiUtilsTest extends BidiUtilsTest {
   
-  @Override
+  //@Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_shared";
   }

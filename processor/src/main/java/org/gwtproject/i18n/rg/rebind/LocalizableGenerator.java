@@ -48,6 +48,7 @@ import org.gwtproject.i18n.rg.Generator;
 import org.gwtproject.i18n.server.CodeGenUtils;
 import org.gwtproject.i18n.server.JavaSourceWriterBuilder;
 import org.gwtproject.i18n.server.SourceWriter;
+import org.gwtproject.i18n.shared.CustomDateTimeFormat;
 import org.gwtproject.i18n.shared.GwtLocale;
 
 /**
@@ -92,9 +93,9 @@ public class LocalizableGenerator extends Generator {
     }
   }
 
-  public static final String CONSTANTS_NAME = Constants.class.getName();
+  public static final String CONSTANTS_NAME = Constants.class.getCanonicalName();
 
-  public static final String CONSTANTS_WITH_LOOKUP_NAME = ConstantsWithLookup.class.getName();
+  public static final String CONSTANTS_WITH_LOOKUP_NAME = ConstantsWithLookup.class.getCanonicalName();
 
   /**
     * Obsolete comment for GWT metadata - needs to be removed once all
@@ -102,7 +103,7 @@ public class LocalizableGenerator extends Generator {
     */
   public static final String GWT_KEY = "gwt.key";
 
-  public static final String MESSAGES_NAME = Messages.class.getName();
+  public static final String MESSAGES_NAME = Messages.class.getCanonicalName();
 
   private LocalizableLinkageCreator linkageCreator = new LocalizableLinkageCreator();
 
@@ -123,8 +124,12 @@ public class LocalizableGenerator extends Generator {
     PropertyOracle propertyOracle = context.getPropertyOracle();
     LocaleUtils localeUtils = LocaleUtils.getInstance(logger, propertyOracle,
         context);
-    GwtLocale locale = localeUtils.getCompileLocale();
-    return generate(logger, context, typeName, localeUtils, locale);
+    TypeElement targetClass = context.getAptContext().elements.getTypeElement(typeName);
+    new ImplFactoryGenerator(logger, context, targetClass, localeUtils).generate();
+    for(GwtLocale loc :localeUtils.getAllLocales() ) {
+      generate(logger, context, typeName, localeUtils, loc);
+    }
+    return generate(logger, context, typeName, localeUtils, localeUtils.getDefaultLocale());
   }
 
   /**
@@ -147,8 +152,23 @@ public class LocalizableGenerator extends Generator {
         throw new UnableToCompleteException();
       }
     // Link current locale and interface type to correct implementation class.
-    String generatedClass = AbstractLocalizableImplCreator.generateConstantOrMessageClass(
-        logger, context, locale, targetClass);
+
+    TypeElement constantsClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.CONSTANTS_NAME);
+    TypeElement messagesClass = context.getAptContext().elements.getTypeElement(LocalizableGenerator.MESSAGES_NAME);
+    TypeElement cdtfClass = context.getAptContext().elements.getTypeElement(CustomDateTimeFormat.class.getCanonicalName());
+
+    boolean assignableToConstants = context.getAptContext().types.isAssignable(targetClass.asType(), constantsClass.asType());
+    boolean assignableToMessages = context.getAptContext().types.isAssignable(targetClass.asType(), messagesClass.asType());
+    boolean assignableToCustomDateTimeFormatToMessages = context.getAptContext().types.isAssignable(targetClass.asType(), cdtfClass.asType());
+
+    String generatedClass = null;
+
+    if(assignableToConstants || assignableToMessages) {
+      generatedClass = AbstractLocalizableImplCreator.generateConstantOrMessageClass(
+              logger, context, locale, targetClass);
+    } else if(assignableToCustomDateTimeFormatToMessages) {
+      generatedClass = new CustomDateTimeFormatGenerator().generate(logger, context, typeName);
+    }
 
     if (generatedClass != null) {
       return generatedClass;
@@ -178,7 +198,6 @@ public class LocalizableGenerator extends Generator {
             localeMap);
       }
     }
-
     return returnedClass;
   }
 

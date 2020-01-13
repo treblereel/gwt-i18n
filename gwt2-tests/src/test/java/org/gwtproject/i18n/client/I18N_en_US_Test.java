@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.core.client.GWT;
+import junit.framework.TestCase;
 import org.gwtproject.i18n.client.TestAnnotatedMessages.Gender;
 import com.google.gwt.junit.client.GWTTestCase;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -28,11 +29,14 @@ import java.util.List;
  * Test the same things as I18NTest but with a different module which
  * uses different locales.
  */
-public class I18N_en_US_Test extends GWTTestCase {
+public class I18N_en_US_Test extends TestCase {
 
-  @Override
-  public String getModuleName() {
-    return "org.gwtproject.i18n.I18NTest_en";
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "en_US");
   }
 
   public void testSelect() {

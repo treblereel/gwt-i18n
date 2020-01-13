@@ -17,6 +17,7 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 import java.util.Date;
 
@@ -25,13 +26,21 @@ import java.util.Date;
  * language.
  */
 @SuppressWarnings("deprecation")
-public class DateTimeParse_en_Test extends GWTTestCase {
+public class DateTimeParse_en_Test extends TestCase {
   // TODO: replace the rest of the assertTrue calls to assertEquals
   //    for better error reporting, where possible.
 
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_en";
+  }*/
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "en");
   }
 
   public void testAbutField() {

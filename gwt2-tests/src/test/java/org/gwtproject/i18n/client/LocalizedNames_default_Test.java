@@ -16,15 +16,25 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 /**
  * Tests LocalizedNames defaults.
  */
-public class LocalizedNames_default_Test extends GWTTestCase {
+public class LocalizedNames_default_Test extends TestCase {
 
   private LocalizedNames names;
 
-  @Override
+  {
+    setLocale();
+    names = LocaleInfo.getCurrentLocale().getLocalizedNames();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "default");
+  }
+
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest";
   }
@@ -32,7 +42,7 @@ public class LocalizedNames_default_Test extends GWTTestCase {
   @Override
   protected void gwtSetUp() throws Exception {
     names = LocaleInfo.getCurrentLocale().getLocalizedNames();
-  }
+  }*/
 
   public void testLikelyRegionCodes() {
     String[] regionCodes = names.getLikelyRegionCodes();

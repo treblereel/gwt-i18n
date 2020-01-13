@@ -185,7 +185,7 @@ public interface Messages extends LocalizableResource {
      * </pre></code>
      * </p>
      *
-     * <p>If multiple {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} or {@link org.gwtproject.i18n.client.annotations.Messages.Select} parameters are
+     * <p>If multiple {@link Messages.PluralCount} or {@link Messages.Select} parameters are
      * supplied, the forms for each, in the order they appear in the parameter
      * list, are supplied separated by a vertical bar ("|").  Example:
      * <code><pre>
@@ -203,7 +203,7 @@ public interface Messages extends LocalizableResource {
      * </pre></code>
      *
      * Note that the number of permutations can grow quickly, and that the default
-     * message is used when every {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} or {@link org.gwtproject.i18n.client.annotations.Messages.Select} would use
+     * message is used when every {@link Messages.PluralCount} or {@link Messages.Select} would use
      * the "other" value.
      * </p>
      */
@@ -217,7 +217,7 @@ public interface Messages extends LocalizableResource {
          *
          * Each pair is the name of a form followed by the string in the source
          * locale for that form.  Each form name is the name of a plural form if
-         * {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount} is used, or the matching value if {@link org.gwtproject.i18n.client.annotations.Messages.Select} is
+         * {@link Messages.PluralCount} is used, or the matching value if {@link Messages.Select} is
          * used.  An example for a locale that has "none", "one", and "other" plural
          * forms:
          *
@@ -284,7 +284,7 @@ public interface Messages extends LocalizableResource {
     }
 
     /**
-     * Ignored except on parameters also tagged with {@link org.gwtproject.i18n.client.annotations.Messages.PluralCount}, and
+     * Ignored except on parameters also tagged with {@link Messages.PluralCount}, and
      * provides an offset to be subtracted from the value before a plural rule
      * is chosen or the value is formatted.  Note that "=n" forms are evaluated
      * before this offset is applied.
@@ -360,7 +360,7 @@ public interface Messages extends LocalizableResource {
          * </p>
          */
         // http://bugs.sun.com/view_bug.do?bug_id=6512707
-        Class<? extends PluralRule> value() default org.gwtproject.i18n.client.PluralRule.class;
+        Class<? extends PluralRule> value() default PluralRule.class;
     }
 
     /**
@@ -376,7 +376,7 @@ public interface Messages extends LocalizableResource {
      * </pre></code>
      * </p>
      *
-     * @deprecated use {@link org.gwtproject.i18n.client.annotations.Messages.AlternateMessage} instead
+     * @deprecated use {@link Messages.AlternateMessage} instead
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)

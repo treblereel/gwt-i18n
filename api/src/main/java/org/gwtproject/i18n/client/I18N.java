@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Inherited
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface I18N {
 

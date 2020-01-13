@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.client.constants;
 
 import org.gwtproject.i18n.client.Constants;
+import org.gwtproject.i18n.client.I18N;
 
 /**
  * DateTimeConstantsImpl class encapsulate a collection of DateTime formatting
@@ -24,6 +25,7 @@ import org.gwtproject.i18n.client.Constants;
  * property files named like "DateTimeConstants_xx.properties". GWT will will
  * perform late binding to the property file that specific to user's locale.
  */
+@I18N
 public interface DateTimeConstantsImpl extends Constants, DateTimeConstants {
   String[] ampms();
 

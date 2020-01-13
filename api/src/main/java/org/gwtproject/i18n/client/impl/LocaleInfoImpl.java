@@ -39,19 +39,14 @@ public class LocaleInfoImpl {
    * provider's assistance).
    */
   static String getRuntimeLocale() {
-    throw new UnsupportedOperationException();
-
+    return System.getProperty("locale");
   }
-
-  /*-{
-    return $wnd['__gwt_Locale'];
-  }-*/;
 
   /**
    * Returns an array of available locale names.
    */
   public String[] getAvailableLocaleNames() {
-    return null;
+    return org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get().getAvailableLocaleNames();
   }
 
   /**
@@ -63,8 +58,8 @@ public class LocaleInfoImpl {
    * @return a {@link DateTimeFormatInfo} instance
    */
   public DateTimeFormatInfo getDateTimeFormatInfo() {
-    //return GWT.create(DateTimeFormatInfoImpl.class);
-    throw new UnsupportedOperationException();
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.getDateTimeFormatInfo();
   }
 
   /**
@@ -81,7 +76,7 @@ public class LocaleInfoImpl {
    * Returns the current locale name, such as "default, "en_US", etc.
    */
   public String getLocaleName() {
-    return null;
+    return System.getProperty("locale");
   }
 
   /**
@@ -94,7 +89,8 @@ public class LocaleInfoImpl {
    * @return the name of the locale in its native locale
    */
   public String getLocaleNativeDisplayName(String localeName) {
-    return null;
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.getLocaleNativeDisplayName(localeName);
   }
 
   /**
@@ -104,28 +100,31 @@ public class LocaleInfoImpl {
    * @return locale URL query parameter name, or null if none
    */
   public String getLocaleQueryParam() {
-    return null;
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.getLocaleQueryParam();
   }
 
   /**
    * @return an implementation of {@link LocalizedNames} for this locale.
    */
   public LocalizedNames getLocalizedNames() {
-    return new LocalizedNamesImpl();
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.getLocalizedNames();
   }
 
   /**
    * Returns a NumberConstants instance appropriate for this locale.
    */
   public NumberConstants getNumberConstants() {
-    throw new UnsupportedOperationException();
-    //return new NumberConstantsImpl();
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.getNumberConstants();
   }
 
   /**
    * Returns true if any locale supported by this build of the app is RTL.
    */
   public boolean hasAnyRTL() {
-    return false;
-  }
+    LocaleInfoImpl localeInfo = org.gwtproject.i18n.client.impl.LocaleInfoImplFactory.get();
+    return localeInfo.hasAnyRTL();
+    }
 }

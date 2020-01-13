@@ -15,10 +15,9 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
+import junit.framework.TestCase;
 import org.gwtproject.i18n.client.I18N_es_MX_Test.MyConstants;
 import org.gwtproject.i18n.client.I18N_es_MX_Test.MyMessages;
-import com.google.gwt.junit.client.GWTTestCase;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,26 +27,19 @@ import java.util.Set;
 /**
  * Tests regional inheritance for es_AR.
  */
-public class I18N_es_AR_RuntimeTest extends GWTTestCase {
+public class I18N_es_AR_RuntimeTest extends TestCase {
 
-  static {
-    if (GWT.isClient()) {
-      setLocale();
-    }
+  {
+    setLocale();
   }
 
-  private static native void setLocale() /*-{
-    $wnd['__gwt_Locale'] = 'es_AR';
-  }-*/;
-
-  @Override
-  public String getModuleName() {
-    return "org.gwtproject.i18n.I18NTest_es_AR_runtime";
+  private static void setLocale() {
+    System.setProperty("locale", "es_AR");
   }
-  
+
   public void testAvailableLocales() {
     String[] locales = LocaleInfo.getAvailableLocaleNames();
-    Set<String> localeSet = new HashSet<String>();
+    Set<String> localeSet = new HashSet<>();
     List<String> localeList = Arrays.asList(locales);
     localeSet.addAll(localeList);
     List<String> expectedList = Arrays.asList("default", "es_419", "es_AR",

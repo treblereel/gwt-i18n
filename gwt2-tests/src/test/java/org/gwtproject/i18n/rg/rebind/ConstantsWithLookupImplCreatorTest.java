@@ -16,6 +16,7 @@
 package org.gwtproject.i18n.rg.rebind;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 /*import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;*/
 /**
  * Tests for {@link ConstantsWithLookupImplCreator}.
  */
+@Ignore
 public class ConstantsWithLookupImplCreatorTest extends TestCase {
 
   private static final int TEST_PARTITION_SIZE = 3;

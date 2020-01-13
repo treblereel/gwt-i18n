@@ -149,10 +149,10 @@ public class MessagesMethodCreator extends AbstractMethodCreator {
             throws UnableToCompleteException {
         String baseName = ruleClass.getQualifiedName().toString();
         TypeElement ruleTypeElement = context.getAptContext().elements.getTypeElement(baseName);
-        Map<String, TypeElement> matchingClasses =
-                LocalizableLinkageCreator.findDerivedClasses(logger, context.getAptContext(), ruleTypeElement);
         for (GwtLocale search : locale.getCompleteSearchList()) {
-            TypeElement localizedType = matchingClasses.get(search.toString());
+            String lookup = ruleTypeElement.getQualifiedName().toString() +
+                    (search.toString().equals("default") ? "" : "_" + search.toString());
+            TypeElement localizedType = context.getAptContext().elements.getTypeElement(lookup);
             if (localizedType != null) {
                 try {
                     Class<?> testClass = Class.forName(
@@ -1370,9 +1370,9 @@ public class MessagesMethodCreator extends AbstractMethodCreator {
             if (ruleClass.getQualifiedName().toString().equals(PluralRule.class.getCanonicalName())) {
                 ruleClass = context.getAptContext().elements.getTypeElement(DefaultRule.class.getCanonicalName());
             }
+
             pluralRule = createLocalizedPluralRule(logger, context,
                                                    ruleClass, locale);
-
             missingPluralForms = new HashSet<>();
             for (PluralForm form : pluralRule.pluralForms()) {
                 if (form.getWarnIfMissing() && !AlternateMessageSelector.OTHER_FORM_NAME.equals(form.getName())) {
@@ -1390,6 +1390,8 @@ public class MessagesMethodCreator extends AbstractMethodCreator {
             boolean isList = false;
 
             Element classType = null;
+
+            System.out.println("argType " + argType + " " + argType.asType());
 
             if (!argType.asType().getKind().isPrimitive()
                     && !argType.asType().getKind().equals(TypeKind.ARRAY)
@@ -1476,6 +1478,7 @@ public class MessagesMethodCreator extends AbstractMethodCreator {
                 out.indent();
                 return;
             }
+
             if (inExactMatches) {
                 /*
                  * If this is the first non-exact value, create a nested select that
@@ -1493,6 +1496,9 @@ public class MessagesMethodCreator extends AbstractMethodCreator {
                 out.indent();
                 return;
             }
+
+
+
             PluralForm[] pluralForms = pluralRule.pluralForms();
             for (int i = 0; i < pluralForms.length; ++i) {
                 if (pluralForms[i].getName().equals(value)) {

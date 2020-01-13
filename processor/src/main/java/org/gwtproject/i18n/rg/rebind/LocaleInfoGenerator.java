@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.lang.model.element.TypeElement;
 
@@ -22,6 +22,7 @@ import com.google.auto.common.MoreElements;
 import org.apache.tapestry.util.text.LocalizedProperties;
 import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.i18n.client.impl.LocaleInfoImpl;
+import org.gwtproject.i18n.client.impl.cldr.DateTimeFormatInfoImpl;
 import org.gwtproject.i18n.ext.GeneratorContext;
 import org.gwtproject.i18n.ext.PropertyOracle;
 import org.gwtproject.i18n.ext.TreeLogger;
@@ -69,7 +70,6 @@ public class LocaleInfoGenerator extends Generator {
 
     /**
      * Generate an implementation for the given type.
-     *
      * @param logger error logger
      * @param context generator context
      * @param typeName target type name
@@ -132,13 +132,8 @@ public class LocaleInfoGenerator extends Generator {
             factory.addImport(JavaScriptObject.class.getCanonicalName());
             factory.addImport(HashMap.class.getCanonicalName());
             SourceWriter writer = factory.createSourceWriter(context, pw);
-            writer.println("private static native String getLocaleNativeDisplayName(");
-            writer.println("    JavaScriptObject nativeDisplayNamesNative,String localeName) /*-{");
-            writer.println("  return nativeDisplayNamesNative[localeName];");
-            writer.println("}-*/;");
             writer.println();
             writer.println("HashMap<String,String> nativeDisplayNamesJava;");
-            writer.println("private JavaScriptObject nativeDisplayNamesNative;");
             writer.println();
             writer.println("@Override");
             writer.println("public String[] getAvailableLocaleNames() {");
@@ -149,18 +144,11 @@ public class LocaleInfoGenerator extends Generator {
             writer.println();
             writer.println("@Override");
             writer.println("public String getLocaleNativeDisplayName(String localeName) {");
-            writer.println("  if (GWT.isScript()) {");
-            writer.println("    if (nativeDisplayNamesNative == null) {");
-            writer.println("      nativeDisplayNamesNative = loadNativeDisplayNamesNative();");
-            writer.println("    }");
-            writer.println("    return getLocaleNativeDisplayName(nativeDisplayNamesNative, localeName);");
-            writer.println("  } else {");
-            writer.println("    if (nativeDisplayNamesJava == null) {");
-            writer.println("      nativeDisplayNamesJava = new HashMap<String, String>();");
+            writer.println("  if (nativeDisplayNamesJava == null) {");
+            writer.println("    nativeDisplayNamesJava = new HashMap<String, String>();");
             getGetLocaleNativeDisplayName(allLocales, displayNames, displayNamesManual, displayNamesOverride, writer);
-            writer.println("    }");
-            writer.println("    return nativeDisplayNamesJava.get(localeName);");
             writer.println("  }");
+            writer.println("  return nativeDisplayNamesJava.get(localeName);");
             writer.println("}");
             writer.println();
             writer.println("@Override");
@@ -172,8 +160,8 @@ public class LocaleInfoGenerator extends Generator {
         }
 
         generateImpl(logger, context, localeUtils, targetClass, packageName, superClassName, allLocales);
-        new LocaleInfoImplFactoryGenerator(logger, context, localeUtils).generate();
-        return packageName + "." + "className";
+        new ImplFactoryGenerator(logger, context, targetClass, localeUtils).generate();
+        return targetClass.getQualifiedName().toString();
     }
 
     private void getGetLocaleNativeDisplayName(GwtLocaleImpl[] allLocales, LocalizedProperties displayNames, LocalizedProperties displayNamesManual, LocalizedProperties displayNamesOverride, SourceWriter writer) {
@@ -219,7 +207,7 @@ public class LocaleInfoGenerator extends Generator {
         for (GwtLocaleImpl locale : allLocales) {
             generateImpl(logger, context, localeUtils, targetClass, packageName, superClassName, locale);
         }
-        generateImpl(logger, context, localeUtils, targetClass, packageName, superClassName, ((GwtLocaleImpl)localeUtils.getDefaultLocale()));
+        generateImpl(logger, context, localeUtils, targetClass, packageName, superClassName, ((GwtLocaleImpl) localeUtils.getDefaultLocale()));
     }
 
     private void generateImpl(TreeLogger logger, GeneratorContext context, LocaleUtils localeUtils, TypeElement targetClass, String packageName, String superClassName, GwtLocaleImpl locale) throws UnableToCompleteException {
@@ -230,9 +218,6 @@ public class LocaleInfoGenerator extends Generator {
         if (!runtimeLocales.isEmpty()) {
             className += "_runtimeSelection";
         }
-
-        System.out.println("className " + className + " >>> " + locale);
-
         pw = context.tryCreate(logger, packageName, className);
         if (pw != null) {
             ClassSourceFileComposerFactory factory = new ClassSourceFileComposerFactory(
@@ -333,15 +318,23 @@ public class LocaleInfoGenerator extends Generator {
                                          + "\".equals(runtimeLocale)");
                 }
                 writer.println(") {");
-                writer.println("  return new " + generatedClass + "();");
+                writer.println("  return new " + generatedClass + getDefaultOrLocale(generatedClass, locale) + "();");
                 writer.println("}");
             }
             // TODO: if we get here, there was an unexpected runtime locale --
             //    should we have an assert or throw an exception?  Currently it
             //    just falls through to the default implementation.
         }
-        writer.println("return GWT.create(" + typeName + ".class);");
+        writer.println("return new " + typeName + getDefaultOrLocale(typeName, locale) + "();");
         writer.outdent();
+    }
+
+    private String getDefaultOrLocale(String type, GwtLocale locale) {
+
+        return locale.toString().equals("default") ?
+                (type.contains(DateTimeFormatInfoImpl.class.getCanonicalName())
+                        ? "" : "_")
+                : "_" + locale.toString();
     }
 
     /**

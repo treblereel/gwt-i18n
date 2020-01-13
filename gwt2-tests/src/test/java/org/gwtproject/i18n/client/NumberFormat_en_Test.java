@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,15 +23,23 @@ import java.math.BigInteger;
 /**
  * Test {@link NumberFormat} in the {@code en} locale.
  */
-public class NumberFormat_en_Test extends GWTTestCase {
+public class NumberFormat_en_Test extends TestCase {
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "en");
+  }
 
   /**
    * Must refer to a valid module that inherits from com.google.gwt.junit.JUnit.
    */
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_en";
-  }
+  }*/
 
   public void testAPIs() {
     NumberFormat formatter;

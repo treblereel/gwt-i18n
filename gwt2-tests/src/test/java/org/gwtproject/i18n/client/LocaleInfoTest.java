@@ -16,17 +16,26 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 import java.util.logging.Logger;
 
 /**
  * Tests the LocaleInfo class and the associated generator.
  */
-public class LocaleInfoTest extends GWTTestCase {
+public class LocaleInfoTest extends TestCase {
 
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest";
+  }*/
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "en");
   }
 
   public void testAvailableLocales() {

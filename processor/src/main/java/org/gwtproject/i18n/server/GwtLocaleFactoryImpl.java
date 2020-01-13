@@ -138,7 +138,7 @@ public class GwtLocaleFactoryImpl implements GwtLocaleFactory {
     String variant = null;
     if (localeName != null && !GwtLocale.DEFAULT_LOCALE.equals(localeName)) {
       // split into component parts
-      ArrayList<String> localeParts = new ArrayList<String>();
+      ArrayList<String> localeParts = new ArrayList<>();
       String[] parts = localeName.split("[-_]");
       for (int i = 0; i < parts.length; ++i) {
         if (parts[i].length() == 1 && i + 1 < parts.length) {

@@ -15,9 +15,9 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
 import org.gwtproject.i18n.shared.DateTimeFormatTestBase;
-import org.gwtproject.i18n.shared.DateTimeFormatTestBaseMyMessages_;
+import org.gwtproject.i18n.shared.DateTimeFormatTestBaseMyFormatsFactory;
+import org.gwtproject.i18n.shared.DateTimeFormatTestBaseMyMessagesFactory;
 
 import java.util.Date;
 
@@ -28,9 +28,13 @@ import java.util.Date;
 @SuppressWarnings("deprecation")
 public class DateTimeFormat_de_Test extends DateTimeFormatTestBase {
 
-  @Override
-  public String getModuleName() {
-    return "org.gwtproject.i18n.I18NTest_de";
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "de");
   }
 
   public void test_EEEEMMMddyy() {
@@ -218,7 +222,7 @@ public class DateTimeFormat_de_Test extends DateTimeFormatTestBase {
   }
 
   public void testCustomFormats() {
-    MyFormats m = GWT.create(MyFormats.class);
+    MyFormats m = DateTimeFormatTestBaseMyFormatsFactory.get();
     Date d = new Date(2010 - 1900, 1, 15, 12, 0, 0);
     assertEquals("15. Feb. 2010", m.yearMonthDayAbbrev().format(d));
     assertEquals("15. Februar 2010", m.yearMonthDayFull().format(d));
@@ -226,7 +230,7 @@ public class DateTimeFormat_de_Test extends DateTimeFormatTestBase {
   }
 
   public void testMessageDateTime() {
-    MyMessages m = new DateTimeFormatTestBaseMyMessages_();
+    MyMessages m = DateTimeFormatTestBaseMyMessagesFactory.get();
     Date d = new Date(2010 - 1900, 1, 15, 12, 0, 0);
     assertEquals("Es ist 15. Feb. 2010", m.getCustomizedDate(d));
   }

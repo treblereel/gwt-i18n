@@ -15,10 +15,6 @@
  */
 package org.gwtproject.i18n;
 
-import org.gwtproject.i18n.server.GwtLocaleTest;
-import org.gwtproject.i18n.server.MessageFormatParserTest;
-import org.gwtproject.i18n.server.RegionInheritanceTest;
-import org.gwtproject.i18n.server.impl.ReflectionMessageInterfaceTest;
 import org.gwtproject.i18n.shared.AnyRtlDirectionEstimatorTest;
 import org.gwtproject.i18n.shared.BidiFormatterTest;
 import org.gwtproject.i18n.shared.BidiUtilsTest;
@@ -40,14 +36,10 @@ public class I18NJreSuite {
     suite.addTestSuite(BidiFormatterTest.class);
     suite.addTestSuite(BidiUtilsTest.class);
     suite.addTestSuite(FirstStrongDirectionEstimatorTest.class);
-    suite.addTestSuite(GwtLocaleTest.class);
     //suite.addTestSuite(LocaleUtilsTest.class);
     //suite.addTestSuite(LocalizableGeneratorTest.class);
-    suite.addTestSuite(MessageFormatParserTest.class);
     //suite.addTestSuite(org.gwtproject.i18n.rg.rebind.MessageFormatParserTest.class);
     //suite.addTestSuite(PropertyCatalogFactoryTest.class);
-    suite.addTestSuite(ReflectionMessageInterfaceTest.class);
-    suite.addTestSuite(RegionInheritanceTest.class);
     /*
      * TODO(jat): rewrite TypeOracleMessageTest to use mocks for all i18n
      * classes rather than loading the real ones, which causes problems getting

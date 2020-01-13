@@ -18,6 +18,7 @@ package org.gwtproject.i18n.rg.rebind;
 import com.google.gwt.dev.javac.testing.impl.MockJavaResource;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import java.util.Map;
  * Check that locale aliases are handled properly for Localizable and related
  * processing.
  */
+@Ignore
 public class LocalizableLinkageCreatorTest extends TestCase {
 
   private static final MockJavaResource LOCALIZABLE = new MockJavaResource(

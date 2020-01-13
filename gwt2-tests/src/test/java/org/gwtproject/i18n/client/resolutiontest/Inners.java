@@ -16,7 +16,6 @@
 
 package org.gwtproject.i18n.client.resolutiontest;
 
-import com.google.gwt.core.client.GWT;
 import org.gwtproject.i18n.client.Constants;
 import org.gwtproject.i18n.client.I18N;
 import org.gwtproject.i18n.client.Localizable;
@@ -150,14 +149,14 @@ public class Inners {
 
     /** Tests Protected Inner Class. */
     public Map<String, String> testExtendsAnotherInner() {
-      ExtendsAnotherInner clazz = new ProtectedInnerInnerClassExtendsAnotherInner_();
+      ExtendsAnotherInner clazz = InnersInnerClassProtectedInnerInnerClassExtendsAnotherInnerFactory.get();
       Map<String, String> answer = clazz.extendsAnotherInner();
       return answer;
     }
 
     /** Test for ExtendProtectedInner. */
     public String testExtendsProtectedInner() {
-      ExtendProtectedInner inner = new ExtendsAnotherInnerExtendProtectedInner_();
+      ExtendProtectedInner inner = InnersInnerClassProtectedInnerInnerClassExtendsAnotherInnerExtendProtectedInnerFactory.get();
       return inner.extendProtectedInner();
     }
 
@@ -216,7 +215,7 @@ public class Inners {
    * Testing protected inner.
    */
   public boolean testProtectedInner() {
-    ProtectedInner inner = new ExtendsAnotherInnerExtendProtectedInner_();
+    ProtectedInner inner = InnersInnerClassProtectedInnerInnerClassExtendsAnotherInnerExtendProtectedInnerFactory.get();
     return inner.protectedInner();
   }
 }

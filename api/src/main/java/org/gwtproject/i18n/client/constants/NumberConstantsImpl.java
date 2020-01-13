@@ -17,6 +17,7 @@
 package org.gwtproject.i18n.client.constants;
 
 import org.gwtproject.i18n.client.Constants;
+import org.gwtproject.i18n.client.I18N;
 
 /**
  * NumberConstantsImpl class encapsulate a collection of Number formatting 
@@ -26,6 +27,7 @@ import org.gwtproject.i18n.client.Constants;
  * will perform late binding to the property file that specific to user's 
  * locale. 
  */
+@I18N
 public interface NumberConstantsImpl extends Constants, NumberConstants  {
   @Override
   String notANumber();

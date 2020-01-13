@@ -24,13 +24,20 @@
         <dependency>
             <groupId>org.gwtproject.i18n</groupId>
             <artifactId>gwt-i18n-api</artifactId>
-            <version>${project.version}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.gwtproject.i18n</groupId>
             <artifactId>gwt-i18n-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.gwtproject.i18n</groupId>
+            <artifactId>gwt-cldr</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
@@ -84,7 +91,13 @@
                             <properties>
                                 <property>
                                     <name>locale</name>
-                                    <value>de,en,ru</value>
+                                    <!--<value>de,en,ru,es_AR,en_US,ar</value>-->
+                                    <value>de,en,ru,ar,fil,pl,nb,fr</value>
+                                </property>
+                                <property>
+                                    <name>locale.new</name>
+                                    <!--<value>de,en,ru,es_AR,en_US,ar</value>-->
+                                    <value>en_US</value>
                                 </property>
                                 <property>
                                     <name>ClientBundle.cacheLocation</name>

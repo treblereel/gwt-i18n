@@ -16,24 +16,29 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 /**
  * Tests LocalizedNames defaults.
  */
-public class LocalizedNames_en_Test extends GWTTestCase {
+public class LocalizedNames_en_Test extends TestCase {
 
   private LocalizedNames names;
 
-  @Override
-  public String getModuleName() {
-    return "org.gwtproject.i18n.I18NTest_en";
-  }
-  
-  @Override
-  protected void gwtSetUp() throws Exception {
+  {
+    setLocale();
     names = LocaleInfo.getCurrentLocale().getLocalizedNames();
   }
 
+  private static void setLocale() {
+    System.setProperty("locale", "en");
+  }
+
+/*  @Override
+  public String getModuleName() {
+    return "org.gwtproject.i18n.I18NTest_en";
+  }*/
+  
   public void testLikelyRegionCodes() {
     String[] regionCodes = names.getLikelyRegionCodes();
     assertTrue("en locale should have at least 10 likely locales",

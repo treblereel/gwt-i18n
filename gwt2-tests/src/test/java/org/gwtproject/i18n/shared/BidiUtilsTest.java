@@ -15,6 +15,7 @@
  */
 package org.gwtproject.i18n.shared;
 
+import junit.framework.TestCase;
 import org.gwtproject.i18n.client.HasDirection.Direction;
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -26,15 +27,15 @@ import com.google.gwt.junit.client.GWTTestCase;
  * due to several differences between the two implementations of RegExp (see
  * {@link com.google.gwt.regexp.shared.RegExpTest} for details). 
  */
-public class BidiUtilsTest extends GWTTestCase {
+public class BidiUtilsTest extends TestCase {
   
   private static BidiUtils bidiUtils = BidiUtils.get();
 
   // This is a hack to force a GWTTestCase to run as a vanilla JUnit TestCase.
-  @Override
+/*  @Override
   public String getModuleName() {
     return null;
-  }
+  }*/
   
   public void testEndsWithLtr() {
     assertTrue(bidiUtils.endsWithLtr("a"));

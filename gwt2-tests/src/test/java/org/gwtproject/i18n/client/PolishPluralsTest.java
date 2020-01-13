@@ -15,14 +15,12 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
  * Tests Polish plurals, which is one of the most complicated.
  */
 
-@I18N
 public class PolishPluralsTest extends GWTTestCase {
 
   /**

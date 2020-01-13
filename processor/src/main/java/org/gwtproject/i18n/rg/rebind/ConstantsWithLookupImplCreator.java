@@ -100,9 +100,6 @@ class ConstantsWithLookupImplCreator extends ConstantsImplCreator {
     super(logger, context.getAptContext(), writer, localizableClass, resourceList);
     this.partitionsSize = partitionsSize;
     this.context = context;
-    Types types = context.getAptContext().types;
-    Elements elements = context.getAptContext().elements;
-
       // Boolean
       LookupMethodCreator booleanMethod = new LookupMethodCreator(this,
                                                                   Type.BOOLEAN) {

@@ -15,7 +15,7 @@
  */
 package org.gwtproject.i18n.client;
 
-import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,11 +23,19 @@ import java.util.Collections;
 /**
  * Tests the LocaleInfo class and the associated generator.
  */
-public class LocaleInfo_ar_Test extends GWTTestCase {
+public class LocaleInfo_ar_Test extends TestCase {
 
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_ar";
+  }*/
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "ar");
   }
 
   public void testCurrentLocale() {

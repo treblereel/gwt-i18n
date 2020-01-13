@@ -17,19 +17,28 @@
 package org.gwtproject.i18n.client;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import junit.framework.TestCase;
 
 /**
  * Validate NumberFormat handles Arabic numbers properly.
  */
-public class NumberFormat_ar_Test extends GWTTestCase {
+public class NumberFormat_ar_Test extends TestCase {
+
+  {
+    setLocale();
+  }
+
+  private static void setLocale() {
+    System.setProperty("locale", "ar");
+  }
 
   /**
    * Use a module which forces the Arabic locale.
    */
-  @Override
+/*  @Override
   public String getModuleName() {
     return "org.gwtproject.i18n.I18NTest_ar";
-  }
+  }*/
   
   public void testDefault() {
     NumberFormat fmt = NumberFormat.getDecimalFormat();
